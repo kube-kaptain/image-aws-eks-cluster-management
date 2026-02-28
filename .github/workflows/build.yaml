@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   build:
-    uses: kube-kaptain/buildon-github-actions/.github/workflows/docker-build-dockerfile.yaml@1.0.69
+    uses: kube-kaptain/buildon-github-actions/.github/workflows/docker-build-dockerfile.yaml@1.0.70
     with:
       tag-version-max-parts: 2
       docker-platform: 'linux/amd64,linux/arm64'
