@@ -66,7 +66,7 @@ RUN chmod +x /usr/local/bin/kubectl
 RUN eval URL_ARCH=\$AWS_CLI_URL_ARCH_${DOCKER_PLATFORM_CPU_ARCHITECTURE} && \
     curl -sLo /tmp/awscliv2.zip "https://awscli.amazonaws.com/awscli-exe-linux-${URL_ARCH}-${AWS_CLI_VERSION}.zip"
 RUN CHECKSUM_ARCH=$(echo ${DOCKER_PLATFORM_CPU_ARCHITECTURE} | sed 's/64$//') && \
-    curl -sLo /tmp/awscli.sha512 "https://github.com/kube-kaptain/aws-cli-v2-index/releases/download/${AWS_CLI_VERSION}/${CHECKSUM_ARCH}.sha512"
+    curl -sLo /tmp/awscli.sha512 "https://github.com/kube-kaptain/aws-cli-v2-index/releases/download/${AWS_CLI_VERSION}/${CHECKSUM_ARCH}-${AWS_CLI_VERSION}.sha512"
 RUN sha512sum /tmp/awscliv2.zip
 RUN CHECKSUM=$(cat /tmp/awscli.sha512) && \
     echo "${CHECKSUM}  /tmp/awscliv2.zip" | sha512sum -c -
