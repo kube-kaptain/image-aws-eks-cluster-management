@@ -65,7 +65,7 @@ RUN chmod +x /usr/local/bin/kubectl
 # Install AWS CLI v2 (checksums fetched from aws-cli-v2-index)
 RUN eval URL_ARCH=\$AWS_CLI_URL_ARCH_${DOCKER_PLATFORM_CPU_ARCHITECTURE} && \
     curl -sLo /tmp/awscliv2.zip "https://awscli.amazonaws.com/awscli-exe-linux-${URL_ARCH}-${AWS_CLI_VERSION}.zip"
-RUN eval CHECKSUM_ARCH=\$AWS_CLI_CHECKSUM_ARCH_${DOCKER_PLATFORM_CPU_ARCHITECTURE} && \
+RUN CHECKSUM_ARCH=$(echo ${DOCKER_PLATFORM_CPU_ARCHITECTURE} | sed 's/64$//') && \
     curl -sLo /tmp/awscli.sha512 "https://github.com/kube-kaptain/aws-cli-v2-index/releases/download/${AWS_CLI_VERSION}/${CHECKSUM_ARCH}.sha512"
 RUN sha512sum /tmp/awscliv2.zip
 RUN CHECKSUM=$(cat /tmp/awscli.sha512) && \
