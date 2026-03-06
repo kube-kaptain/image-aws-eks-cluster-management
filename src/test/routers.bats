@@ -36,6 +36,9 @@ setup() {
   create_stub "cluster-upgrade-fast-end-to-end-automatic"
   create_stub "cluster-cordon-node"
   create_stub "cluster-cordon-nodegroup"
+  create_stub "cluster-uncordon-node"
+  create_stub "cluster-uncordon-nodegroup"
+  create_stub "cluster-uncordon-old-nodegroups"
   create_stub "cluster-drain-node"
   create_stub "cluster-drain-nodegroup"
   create_stub "cluster-locksize-nodegroup"
@@ -173,6 +176,26 @@ run_router() {
 
 @test "cluster-cordon: unknown noun exits 1 with error" {
   run run_router "cluster-cordon" nonexistent
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Unknown"* ]]
+}
+
+# --- uncordon router ---
+
+@test "cluster-uncordon: no args exits 1 with usage" {
+  run run_router "cluster-uncordon"
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Usage:"* ]]
+}
+
+@test "cluster-uncordon: help exits 0 with usage" {
+  run run_router "cluster-uncordon" help
+  [[ "${status}" -eq 0 ]]
+  [[ "${output}" == *"Usage:"* ]]
+}
+
+@test "cluster-uncordon: unknown noun exits 1 with error" {
+  run run_router "cluster-uncordon" nonexistent
   [[ "${status}" -eq 1 ]]
   [[ "${output}" == *"Unknown"* ]]
 }
