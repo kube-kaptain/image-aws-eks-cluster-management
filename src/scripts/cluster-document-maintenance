@@ -21,7 +21,7 @@ A normal maintenance run looks like this:
 3. Run `cluster setup-credentials` to make the commands work
 4. Run `cluster list all` to get the lay of the land
 5. Run `cluster upgrade addons` to get the addons up to date as a base line
-6. Run `cluster upgrade cluster` upgrade control plane and create new nodegroups
+6. Run `cluster upgrade controlplane` to upgrade the control plane version
 7. Run `cluster cordon oldnodegroups` to prevent workloads starting up on them
 8. Delete a low-impact pod and ensure it starts up fine on the new node group(s)
 9. Gently and thoughtfully migrate any singletons or other senstive workloads

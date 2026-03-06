@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2025-2026 Kaptain contributors (Fred Cooke)
 #
-# Upgrade an EKS cluster to match the full cluster.yaml config
+# Upgrade the EKS control plane to match the version in cluster.yaml
 #
-# Usage: cluster upgrade cluster [--dry-run]
+# Usage: cluster upgrade controlplane [--dry-run]
 set -euo pipefail
 
 approve="--approve"
@@ -17,7 +17,7 @@ case "${1:-}" in
     ;;
   *)
     echo "ERROR: Unknown flag '${1}'" >&2
-    echo "Usage: cluster upgrade cluster [--dry-run]" >&2
+    echo "Usage: cluster upgrade controlplane [--dry-run]" >&2
     exit 1
     ;;
 esac
@@ -31,12 +31,12 @@ fi
 
 cluster_name=$(yq '.metadata.name' "${CLUSTER_CONFIG}")
 
-echo "Upgrading cluster ${cluster_name}..."
+echo "Upgrading control plane for ${cluster_name}..."
 eksctl upgrade cluster -f "${CLUSTER_CONFIG}" ${approve}
 
 echo ""
 if [[ -z "${approve}" ]]; then
   echo "Dry run complete. No changes were made."
 else
-  echo "Cluster ${cluster_name} upgraded successfully."
+  echo "Control plane for ${cluster_name} upgraded successfully."
 fi
