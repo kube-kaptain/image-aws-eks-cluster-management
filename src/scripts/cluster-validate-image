@@ -5,6 +5,12 @@
 # Validate the final built image has everything it needs to operate
 set -euo pipefail
 
+if [[ $# -ne 0 ]]; then
+  echo "ERROR: This command takes no arguments" >&2
+  echo "Usage: cluster validate-image" >&2
+  exit 1
+fi
+
 CLUSTER_CONFIG="${CLUSTER_CONFIG:?CLUSTER_CONFIG must be set}"
 age_file="/kd/secrets/aws-credentials.age"
 errors=0
