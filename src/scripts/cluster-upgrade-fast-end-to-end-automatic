@@ -95,16 +95,16 @@ print_banner "Step 7: Creating new nodegroups for ${configured_version}"
 "${CLUSTER_SCRIPT_DIR}/cluster-create-nodegroups"
 
 print_banner "Step 8: Locking old nodegroup sizes"
-"${CLUSTER_SCRIPT_DIR}/cluster-locksize-oldnodegroups"
+"${CLUSTER_SCRIPT_DIR}/cluster-locksize-old-nodegroups"
 
 print_banner "Step 9: Cordoning old nodegroups"
-"${CLUSTER_SCRIPT_DIR}/cluster-cordon-oldnodegroups"
+"${CLUSTER_SCRIPT_DIR}/cluster-cordon-old-nodegroups"
 
 print_banner "Step 10: Draining old nodegroups"
-"${CLUSTER_SCRIPT_DIR}/cluster-drain-oldnodegroups"
+"${CLUSTER_SCRIPT_DIR}/cluster-drain-old-nodegroups"
 
 print_banner "Step 11: Deleting old nodegroups"
-"${CLUSTER_SCRIPT_DIR}/cluster-delete-oldnodegroups"
+"${CLUSTER_SCRIPT_DIR}/cluster-delete-old-nodegroups"
 
 print_banner "Step 12: Capturing after state"
 "${CLUSTER_SCRIPT_DIR}/cluster-list-all" | tee /kd/work/cluster-upgrade-fast-end-to-end-automatic/after

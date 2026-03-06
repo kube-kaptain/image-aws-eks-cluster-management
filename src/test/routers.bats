@@ -38,7 +38,7 @@ setup() {
   create_stub "cluster-drain-node"
   create_stub "cluster-drain-nodegroup"
   create_stub "cluster-locksize-nodegroup"
-  create_stub "cluster-locksize-oldnodegroups"
+  create_stub "cluster-locksize-old-nodegroups"
   create_stub "cluster-describe-stacks"
   create_stub "cluster-document-creation"
   create_stub "cluster-document-maintenance"

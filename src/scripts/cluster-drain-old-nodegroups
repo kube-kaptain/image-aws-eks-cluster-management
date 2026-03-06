@@ -2,19 +2,28 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2025-2026 Kaptain contributors (Fred Cooke)
 #
-# Delete all nodegroups that are not defined in cluster.yaml
+# Drain all nodes in nodegroups that are not defined in cluster.yaml
 # These are typically old nodegroups left over after an upgrade
 #
-# Usage: cluster delete oldnodegroups
+# Usage: cluster drain old-nodegroups [--force]
 set -euo pipefail
 
-if [[ $# -ne 0 ]]; then
-  echo "ERROR: This command takes no arguments" >&2
-  echo "Usage: cluster delete oldnodegroups" >&2
-  exit 1
-fi
-
 CLUSTER_SCRIPT_DIR="${CLUSTER_SCRIPT_DIR:?CLUSTER_SCRIPT_DIR must be set}"
+
+force=""
+case "${1:-}" in
+  --force)
+    force="--force"
+    shift
+    ;;
+  "")
+    ;;
+  *)
+    echo "ERROR: Unknown flag '${1}'" >&2
+    echo "Usage: cluster drain old-nodegroups [--force]" >&2
+    exit 1
+    ;;
+esac
 
 CLUSTER_CONFIG="${CLUSTER_CONFIG:?CLUSTER_CONFIG must be set}"
 
@@ -35,7 +44,7 @@ old_count=0
 for ng in ${live_nodegroups}; do
   if ! echo "${configured_nodegroups}" | grep -qx "${ng}"; then
     echo "Old nodegroup found: ${ng}"
-    "${CLUSTER_SCRIPT_DIR}/cluster-delete-nodegroup" "${ng}"
+    "${CLUSTER_SCRIPT_DIR}/cluster-drain-nodegroup" "${ng}" ${force}
     old_count=$((old_count + 1))
     echo ""
   fi
@@ -44,5 +53,5 @@ done
 if [[ ${old_count} -eq 0 ]]; then
   echo "No old nodegroups found."
 else
-  echo "Deleted ${old_count} old nodegroup(s)."
+  echo "Drained ${old_count} old nodegroup(s)."
 fi

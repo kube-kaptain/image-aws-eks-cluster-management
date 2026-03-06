@@ -38,13 +38,13 @@ A normal maintenance run looks like this:
 6. Run `cluster upgrade controlplane` to upgrade the control plane version
 7. Run `cluster upgrade addons` to bring the addons into line with the control plane
 8. Run `cluster create nodegroups` to create new nodegroup(s) to migrate workloads onto
-9. Run `cluster locksize oldnodegroups` to prevent autoscaler scaling old nodegroups
-10. Run `cluster cordon oldnodegroups` to prevent workloads starting up on them
+9. Run `cluster locksize old-nodegroups` to prevent autoscaler scaling old nodegroups
+10. Run `cluster cordon old-nodegroups` to prevent workloads starting up on them
 11. Delete a low-impact pod and ensure it starts up fine on the new nodegroup(s)
 12. Gently and thoughtfully migrate any singletons or other sensitive workloads
-13. Run `cluster drain oldnodegroups` to migrate any remaining workloads
+13. Run `cluster drain old-nodegroups` to migrate any remaining workloads
 14. Confirm everything you care about is running and working fine
-15. Run `cluster delete oldnodegroups` to remove the empty unused nodes
+15. Run `cluster delete old-nodegroups` to remove the empty unused nodes
 16. Upgrade other components within the cluster to match
 
 Or if your workloads are resilient (multiple replicas, PDBs, all three probes,
