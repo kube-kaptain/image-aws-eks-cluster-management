@@ -28,6 +28,18 @@ if [[ ! -f "${CLUSTER_CONFIG}" ]]; then
   exit 1
 fi
 
+# Must not be empty
+if [[ ! -s "${CLUSTER_CONFIG}" ]]; then
+  echo "FAIL: ${CLUSTER_CONFIG} is empty"
+  exit 1
+fi
+
+# Must be valid YAML
+if ! yq '.' "${CLUSTER_CONFIG}" > /dev/null 2>&1; then
+  echo "FAIL: ${CLUSTER_CONFIG} is not valid YAML"
+  exit 1
+fi
+
 # cluster name must be set
 cluster_name=$(yq '.metadata.name // ""' "${CLUSTER_CONFIG}")
 if [[ -z "${cluster_name}" ]]; then
