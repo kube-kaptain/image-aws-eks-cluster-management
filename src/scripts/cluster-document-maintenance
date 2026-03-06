@@ -22,13 +22,15 @@ A normal maintenance run looks like this:
 4. Run `cluster list all` to get the lay of the land
 5. Run `cluster upgrade addons` to get the addons up to date as a base line
 6. Run `cluster upgrade controlplane` to upgrade the control plane version
-7. Run `cluster cordon oldnodegroups` to prevent workloads starting up on them
-8. Delete a low-impact pod and ensure it starts up fine on the new node group(s)
-9. Gently and thoughtfully migrate any singletons or other senstive workloads
-10. Run `cluster drain oldnodegroups` to migrate any remaining workloads
-11. Confirm everything you care about is running and working fine
-12. Run `cluster delete oldnodegroups` to remove the empty unused nodes
-13. Run `cluster upgrade addons` to get the addons up to date and matching
-14. Upgrade other components within the cluster to match
+7. Run `cluster upgrade addons` to bring the addons into line with the control plane
+8. Run `cluster create nodegroups` to create new nodegroup(s) to migrate workloads onto
+9. Run `cluster locksize oldnodegroups` to prevent autoscaler scaling old nodegroups
+10. Run `cluster cordon oldnodegroups` to prevent workloads starting up on them
+11. Delete a low-impact pod and ensure it starts up fine on the new nodegroup(s)
+12. Gently and thoughtfully migrate any singletons or other sensitive workloads
+13. Run `cluster drain oldnodegroups` to migrate any remaining workloads
+14. Confirm everything you care about is running and working fine
+15. Run `cluster delete oldnodegroups` to remove the empty unused nodes
+16. Upgrade other components within the cluster to match
 
 EOF
