@@ -17,16 +17,22 @@ setup() {
   }
 
   # Top-level router stubs
+  create_stub "cluster-create"
   create_stub "cluster-list"
   create_stub "cluster-delete"
 
   # Sub-router stubs
+  create_stub "cluster-create-cluster"
+  create_stub "cluster-create-nodegroup"
+  create_stub "cluster-create-nodegroups"
   create_stub "cluster-list-clusters"
   create_stub "cluster-list-nodes"
   create_stub "cluster-delete-cluster"
   create_stub "cluster-delete-nodegroup"
-  create_stub "cluster-upgrade-cluster"
+  create_stub "cluster-upgrade-controlplane"
   create_stub "cluster-upgrade-addon"
+  create_stub "cluster-upgrade-addons"
+  create_stub "cluster-upgrade-fast-end-to-end-automatic"
   create_stub "cluster-cordon-node"
   create_stub "cluster-cordon-nodegroup"
   create_stub "cluster-drain-node"
@@ -63,6 +69,26 @@ run_router() {
 
 @test "cluster: unknown verb exits 1 with error" {
   run run_router "cluster" nonexistent
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Unknown"* ]]
+}
+
+# --- create router ---
+
+@test "cluster-create: no args exits 1 with usage" {
+  run run_router "cluster-create"
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Usage:"* ]]
+}
+
+@test "cluster-create: help exits 0 with usage" {
+  run run_router "cluster-create" help
+  [[ "${status}" -eq 0 ]]
+  [[ "${output}" == *"Usage:"* ]]
+}
+
+@test "cluster-create: unknown noun exits 1 with error" {
+  run run_router "cluster-create" nonexistent
   [[ "${status}" -eq 1 ]]
   [[ "${output}" == *"Unknown"* ]]
 }
