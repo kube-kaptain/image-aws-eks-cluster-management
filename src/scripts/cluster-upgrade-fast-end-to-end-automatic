@@ -106,10 +106,13 @@ print_banner "Step 10: Draining old nodegroups"
 print_banner "Step 11: Deleting old nodegroups"
 "${CLUSTER_SCRIPT_DIR}/cluster-delete-old-nodegroups"
 
-print_banner "Step 12: Capturing after state"
+print_banner "Step 12: Reconciling auto mode config"
+"${CLUSTER_SCRIPT_DIR}/cluster-upgrade-auto-mode-config"
+
+print_banner "Step 13: Capturing after state"
 "${CLUSTER_SCRIPT_DIR}/cluster-list-all" | tee /kd/work/cluster-upgrade-fast-end-to-end-automatic/after
 
-print_banner "Step 13: Automated upgrade complete"
+print_banner "Step 14: Automated upgrade complete"
 echo "Before and after state captured in /kd/work/cluster-upgrade-fast-end-to-end-automatic/"
 echo ""
 echo "Next: upgrade other components within the cluster to match."
