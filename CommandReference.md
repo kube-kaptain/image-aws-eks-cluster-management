@@ -91,6 +91,7 @@ router without arguments to see its available sub-commands.
 | `cluster upgrade controlplane`              | Upgrade the EKS control plane to match cluster.yaml  |
 | `cluster upgrade addon <name>`              | Upgrade a single EKS addon                           |
 | `cluster upgrade addons`                    | Upgrade all EKS addons as defined in cluster.yaml    |
+| `cluster upgrade auto-mode-config`          | Reconcile EKS auto mode config to match cluster.yaml |
 | `cluster upgrade fast-end-to-end-automatic` | Automated end-to-end cluster upgrade (fast path)     |
 
 ### cordon

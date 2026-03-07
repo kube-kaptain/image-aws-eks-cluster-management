@@ -104,6 +104,11 @@ setup() {
 
 # --- other no-arg scripts ---
 
+@test "cluster-upgrade-auto-mode-config: rejects args" {
+  run bash "${SCRIPTS_DIR}/cluster-upgrade-auto-mode-config" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
 @test "cluster-upgrade-fast-end-to-end-automatic: rejects args" {
   run bash "${SCRIPTS_DIR}/cluster-upgrade-fast-end-to-end-automatic" bogus
   [[ "${status}" -eq 1 ]]
