@@ -2,14 +2,14 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2025-2026 Kaptain contributors (Fred Cooke)
 #
-# List available addon versions and their compatible Kubernetes versions
+# List all available addon versions compatible with the current cluster
 #
-# Usage: cluster list addon-versions
+# Usage: cluster list all-addons-all-versions
 set -euo pipefail
 
 if [[ $# -ne 0 ]]; then
   echo "ERROR: This command takes no arguments" >&2
-  echo "Usage: cluster list addon-versions" >&2
+  echo "Usage: cluster list all-addons-all-versions" >&2
   exit 1
 fi
 

@@ -60,7 +60,7 @@ router without arguments to see its available sub-commands.
 | `cluster list nodes`                      | List Kubernetes nodes                                                      |
 | `cluster list addons`                     | List EKS addons                                                            |
 | `cluster list stacks`                     | List CloudFormation stacks managed by eksctl                               |
-| `cluster list addon-versions`             | List available addon versions and compatible Kubernetes versions           |
+| `cluster list all-addons-all-versions`    | List all available addon versions compatible with the current cluster      |
 | `cluster list nodegroup-size <name>`      | Show the min, max, and desired size of a nodegroup                         |
 | `cluster list nodes-for-nodegroup <name>` | List nodes belonging to a specific nodegroup                               |
 | `cluster list nodes-for-new-nodegroups`   | List nodes in nodegroups defined in cluster.yaml                           |
