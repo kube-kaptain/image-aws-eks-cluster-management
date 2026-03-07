@@ -2,6 +2,8 @@
 
 A comprehensive set of tools for managing EKS clusters on AWS.
 
+For the full list of available commands see the [Command Reference](CommandReference.md).
+
 
 ## Image Contents
 
@@ -19,6 +21,15 @@ Built for `linux/amd64` and `linux/arm64` for your ease of use.
 
 
 ## Usage
+
+To use this image the best approach is to use a Kaptain build process. Right
+now only GitHub Actions workflows are available, so below is a link to the
+example file for the correct workflow for using this image.
+
+[Kaptain GH Actions example workflow](https://github.com/kube-kaptain/buildon-github-actions/blob/main/examples/aws-eks-cluster-management.yaml)
+
+
+## Use Patterns
 
 This image can be used for creation deletion and maintenance but the former two
 are not done frequently (eg DR practice runs or when new). On the contrary the
