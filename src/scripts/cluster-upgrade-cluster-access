@@ -83,7 +83,7 @@ fi
 
 if [[ "${dry_run}" == "true" ]]; then
   desired_arns=$(yq -r '.accessConfig.accessEntries[].principalARN' "${CLUSTER_CONFIG}" | sort)
-  live_arns=$(eksctl get accessentry --cluster "${cluster_name}" -o json | yq -r '.[].principalARN' | sort)
+  live_arns=$(eksctl get accessentry --cluster "${cluster_name}" -o yaml | yq -r '.[].principalARN' | sort)
 
   echo "Dry run: access entries for ${cluster_name}"
   echo ""

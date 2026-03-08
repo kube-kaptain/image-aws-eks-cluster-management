@@ -50,7 +50,7 @@ if [[ "${has_entries}" -eq 0 ]]; then
 fi
 
 desired_arns=$(yq -r '.accessConfig.accessEntries[].principalARN' "${CLUSTER_CONFIG}" | sort)
-live_arns=$(eksctl get accessentry --cluster "${cluster_name}" -o json | yq -r '.[].principalARN' | sort)
+live_arns=$(eksctl get accessentry --cluster "${cluster_name}" -o yaml | yq -r '.[].principalARN' | sort)
 
 extras=$(comm -13 <(echo "${desired_arns}") <(echo "${live_arns}"))
 if [[ -z "${extras}" ]]; then
