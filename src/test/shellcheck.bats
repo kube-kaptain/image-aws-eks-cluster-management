@@ -1,5 +1,5 @@
 #!/usr/bin/env bats
-# Run shellcheck on all cluster scripts
+# Run shellcheck on all scripts
 
 SCRIPTS_DIR="$(cd "${BATS_TEST_DIRNAME}/../scripts" && pwd)"
 WORK_DIR="$(cd "${BATS_TEST_DIRNAME}/../../target" && pwd)/shellcheck"
@@ -10,9 +10,17 @@ setup() {
 }
 
 @test "all scripts pass shellcheck" {
+  local enables=(
+    --external-sources
+    --enable=require-variable-braces
+    --enable=require-double-brackets
+    --enable=avoid-nullary-conditions
+    --enable=check-unassigned-uppercase
+    --enable=deprecate-which
+  )
   local failures=()
-  for script in "${SCRIPTS_DIR}"/cluster*; do
-    if ! shellcheck "${script}" > "${WORK_DIR}/$(basename "${script}").out" 2>&1; then
+  for script in "${SCRIPTS_DIR}"/*; do
+    if ! shellcheck "${enables[@]}" "${script}" > "${WORK_DIR}/$(basename "${script}").out" 2>&1; then
       failures+=("$(basename "${script}")")
     fi
   done

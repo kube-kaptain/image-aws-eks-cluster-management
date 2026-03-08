@@ -2,14 +2,14 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2025-2026 Kaptain contributors (Fred Cooke)
 #
-# List EKS addons for the cluster defined in cluster.yaml
+# Output raw JSON of all available addon versions compatible with the current cluster
 #
-# Usage: cluster list addons
+# Usage: cluster list all-addons-raw-json
 set -euo pipefail
 
 if [[ $# -ne 0 ]]; then
   echo "ERROR: This command takes no arguments" >&2
-  echo "Usage: cluster list addons" >&2
+  echo "Usage: cluster list all-addons-raw-json" >&2
   exit 1
 fi
 
@@ -22,4 +22,4 @@ fi
 
 cluster_name=$(yq '.metadata.name' "${CLUSTER_CONFIG}")
 
-eksctl get addons --cluster "${cluster_name}"
+eksctl -v 0 utils describe-addon-versions --cluster "${cluster_name}"

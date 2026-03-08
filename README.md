@@ -49,18 +49,22 @@ A normal maintenance run looks like this:
 2. Run `cluster validate-image` to ensure it's viable
 3. Run `cluster setup-credentials` to make the commands work
 4. Run `cluster list all` to get the lay of the land
-5. Run `cluster upgrade addons` to get the addons up to date as a base line
-6. Run `cluster upgrade controlplane` to upgrade the control plane version
-7. Run `cluster upgrade addons` to bring the addons into line with the control plane
-8. Run `cluster create nodegroups` to create new nodegroup(s) to migrate workloads onto
-9. Run `cluster locksize old-nodegroups` to prevent autoscaler scaling old nodegroups
-10. Run `cluster cordon old-nodegroups` to prevent workloads starting up on them
-11. Delete a low-impact pod and ensure it starts up fine on the new nodegroup(s)
-12. Gently and thoughtfully migrate any singletons or other sensitive workloads
-13. Run `cluster drain old-nodegroups` to migrate any remaining workloads
-14. Confirm everything you care about is running and working fine
-15. Run `cluster delete old-nodegroups` to remove the empty unused nodes
-16. Upgrade other components within the cluster to match
+5. Run `cluster list insights` to review any advisories and decide whether to proceed
+6. If more detail is needed run `cluster describe insight <ID>` for each
+7. Run `cluster upgrade addons` to get the addons up to date as a base line
+8. Run `cluster upgrade controlplane` to upgrade the control plane version
+9. Run `cluster upgrade addons` to bring the addons into line with the control plane
+10. Run `cluster create nodegroups` to create new nodegroup(s) to migrate workloads onto
+11. Run `cluster locksize old-nodegroups` to prevent autoscaler scaling old nodegroups
+12. Run `cluster cordon old-nodegroups` to prevent workloads starting up on them
+13. Delete a low-impact pod and ensure it starts up fine on the new nodegroup(s)
+14. Gently and thoughtfully migrate any singletons or other sensitive workloads
+15. Run `cluster drain old-nodegroups` to migrate any remaining workloads
+16. Confirm everything you care about is running and working fine
+17. Run `cluster delete old-nodegroups` to remove the empty unused nodes
+18. Run `cluster upgrade yaml-reconciliation` to ensure cluster matches cluster.yaml
+    WARNING: ensure toggling auto mode won't disrupt your workloads before running
+19. Upgrade other components within the cluster to match
 
 Or if your workloads are resilient (multiple replicas, PDBs, all three probes,
 termination grace period, graceful shutdown) you can run the automated version:

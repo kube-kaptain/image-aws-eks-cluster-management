@@ -27,7 +27,7 @@ cluster_name=$(yq '.metadata.name' "${CLUSTER_CONFIG}")
 configured_nodegroups=$(yq '.managedNodeGroups[].name // .nodeGroups[].name' "${CLUSTER_CONFIG}" 2>/dev/null || true)
 
 # Get nodegroup names currently on the cluster
-live_nodegroups=$(eksctl get nodegroups --cluster "${cluster_name}" -o json | yq '.[].Name')
+live_nodegroups=$(eksctl get nodegroups --cluster "${cluster_name}" -o yaml | yq '.[].Name')
 
 found=0
 for ng in ${live_nodegroups}; do

@@ -53,8 +53,13 @@ setup() {
   [[ "${status}" -eq 1 ]]
 }
 
-@test "cluster-list-addon-versions: rejects args" {
-  run bash "${SCRIPTS_DIR}/cluster-list-addon-versions" bogus
+@test "cluster-list-all-addons-all-versions: rejects args" {
+  run bash "${SCRIPTS_DIR}/cluster-list-all-addons-all-versions" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
+@test "cluster-list-all-addons-raw-json: rejects args" {
+  run bash "${SCRIPTS_DIR}/cluster-list-all-addons-raw-json" bogus
   [[ "${status}" -eq 1 ]]
 }
 
@@ -73,6 +78,16 @@ setup() {
   [[ "${status}" -eq 1 ]]
 }
 
+@test "cluster-list-access-entries: rejects args" {
+  run bash "${SCRIPTS_DIR}/cluster-list-access-entries" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
+@test "cluster-list-insights: rejects args" {
+  run bash "${SCRIPTS_DIR}/cluster-list-insights" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
 # --- delete ---
 
 @test "cluster-delete-cluster: rejects args" {
@@ -82,6 +97,11 @@ setup() {
 
 @test "cluster-delete-old-nodegroups: rejects args" {
   run bash "${SCRIPTS_DIR}/cluster-delete-old-nodegroups" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
+@test "cluster-delete-access-entries: rejects args" {
+  run bash "${SCRIPTS_DIR}/cluster-delete-access-entries" bogus
   [[ "${status}" -eq 1 ]]
 }
 
@@ -100,6 +120,38 @@ setup() {
 @test "cluster-locksize-old-nodegroups: rejects args" {
   run bash "${SCRIPTS_DIR}/cluster-locksize-old-nodegroups" bogus
   [[ "${status}" -eq 1 ]]
+}
+
+# --- other flag scripts (--dry-run) ---
+
+@test "cluster-upgrade-cluster-auto-mode: rejects unknown flag" {
+  run bash "${SCRIPTS_DIR}/cluster-upgrade-cluster-auto-mode" --bogus
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Unknown"* ]]
+}
+
+@test "cluster-upgrade-cluster-endpoints: rejects unknown flag" {
+  run bash "${SCRIPTS_DIR}/cluster-upgrade-cluster-endpoints" --bogus
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Unknown"* ]]
+}
+
+@test "cluster-upgrade-cluster-logging: rejects unknown flag" {
+  run bash "${SCRIPTS_DIR}/cluster-upgrade-cluster-logging" --bogus
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Unknown"* ]]
+}
+
+@test "cluster-upgrade-yaml-reconciliation: rejects unknown flag" {
+  run bash "${SCRIPTS_DIR}/cluster-upgrade-yaml-reconciliation" --bogus
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Unknown"* ]]
+}
+
+@test "cluster-upgrade-cluster-access: rejects unknown flag" {
+  run bash "${SCRIPTS_DIR}/cluster-upgrade-cluster-access" --bogus
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Unknown"* ]]
 }
 
 # --- other no-arg scripts ---
@@ -141,6 +193,11 @@ setup() {
 
 @test "cluster-validate-image: rejects args" {
   run bash "${SCRIPTS_DIR}/cluster-validate-image" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
+@test "cluster-create-access-entries: rejects args" {
+  run bash "${SCRIPTS_DIR}/cluster-create-access-entries" bogus
   [[ "${status}" -eq 1 ]]
 }
 
@@ -217,6 +274,17 @@ setup() {
 
 @test "cluster-delete-addon: too many args exits 1" {
   run bash "${SCRIPTS_DIR}/cluster-delete-addon" one two
+  [[ "${status}" -eq 1 ]]
+}
+
+@test "cluster-delete-access-entry: no args exits 1" {
+  run bash "${SCRIPTS_DIR}/cluster-delete-access-entry"
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Usage"* ]]
+}
+
+@test "cluster-delete-access-entry: too many args exits 1" {
+  run bash "${SCRIPTS_DIR}/cluster-delete-access-entry" one two
   [[ "${status}" -eq 1 ]]
 }
 
@@ -391,4 +459,29 @@ setup() {
   run bash "${SCRIPTS_DIR}/cluster-upgrade-addon"
   [[ "${status}" -eq 1 ]]
   [[ "${output}" == *"Usage"* ]]
+}
+
+# ====================================================================
+# Create access entry: requires principal ARN (extra args pass through)
+# ====================================================================
+
+@test "cluster-create-access-entry: no args exits 1" {
+  run bash "${SCRIPTS_DIR}/cluster-create-access-entry"
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Usage"* ]]
+}
+
+# ====================================================================
+# Describe insight: requires insight ID
+# ====================================================================
+
+@test "cluster-describe-insight: no args exits 1" {
+  run bash "${SCRIPTS_DIR}/cluster-describe-insight"
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Usage"* ]]
+}
+
+@test "cluster-describe-insight: too many args exits 1" {
+  run bash "${SCRIPTS_DIR}/cluster-describe-insight" one two
+  [[ "${status}" -eq 1 ]]
 }

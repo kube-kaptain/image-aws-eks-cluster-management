@@ -35,43 +35,51 @@ router without arguments to see its available sub-commands.
 | `cluster create nodegroup <name> [--dry-run]` | Create a single EKS nodegroup from cluster.yaml                            |
 | `cluster create nodegroups [--dry-run]`       | Create all EKS nodegroups defined in cluster.yaml                          |
 | `cluster create addons [--force]`             | Create all EKS addons defined in cluster.yaml                              |
+| `cluster create access-entry <arn> [options]` | Create a single EKS access entry                                           |
+| `cluster create access-entries`               | Create all missing access entries defined in cluster.yaml                  |
 | `cluster bootstrap-cilium`                    | Bootstrap Cilium CNI on a newly created EKS cluster. Not yet implemented.  |
 
 ### delete
 
-| Command                           | Description                                          |
-|-----------------------------------|------------------------------------------------------|
-| `cluster delete cluster`          | Delete an EKS cluster with interactive confirmation  |
-| `cluster delete nodegroup <name>` | Delete an EKS nodegroup                              |
-| `cluster delete old-nodegroups`   | Delete all nodegroups not defined in cluster.yaml    |
-| `cluster delete addon <name>`     | Delete an EKS addon                                  |
+| Command                             | Description                                          |
+|-------------------------------------|------------------------------------------------------|
+| `cluster delete cluster`            | Delete an EKS cluster with interactive confirmation  |
+| `cluster delete nodegroup <name>`   | Delete an EKS nodegroup                              |
+| `cluster delete old-nodegroups`     | Delete all nodegroups not defined in cluster.yaml    |
+| `cluster delete addon <name>`       | Delete an EKS addon                                  |
+| `cluster delete access-entry <arn>` | Delete a single EKS access entry                     |
+| `cluster delete access-entries`     | Delete access entries not defined in cluster.yaml    |
 
 
 ## Information
 
 ### list
 
-| Command                                   | Description                                                                |
-|-------------------------------------------|----------------------------------------------------------------------------|
-| `cluster list all`                        | List everything: clusters, version, nodegroups, addons, nodes, and stacks  |
-| `cluster list clusters`                   | List EKS clusters                                                          |
-| `cluster list version`                    | Show current EKS control plane version and compare with cluster.yaml       |
-| `cluster list nodegroups`                 | List EKS nodegroups                                                        |
-| `cluster list nodes`                      | List Kubernetes nodes                                                      |
-| `cluster list addons`                     | List EKS addons                                                            |
-| `cluster list stacks`                     | List CloudFormation stacks managed by eksctl                               |
-| `cluster list addon-versions`             | List available addon versions and compatible Kubernetes versions           |
-| `cluster list nodegroup-size <name>`      | Show the min, max, and desired size of a nodegroup                         |
-| `cluster list nodes-for-nodegroup <name>` | List nodes belonging to a specific nodegroup                               |
-| `cluster list nodes-for-new-nodegroups`   | List nodes in nodegroups defined in cluster.yaml                           |
-| `cluster list nodes-for-old-nodegroups`   | List nodes in nodegroups not defined in cluster.yaml                       |
-| `cluster list old-nodes-not-cordoned`     | List nodes in old nodegroups that are not yet cordoned                     |
+| Command                                   | Description                                                                   |
+|-------------------------------------------|-------------------------------------------------------------------------------|
+| `cluster list all`                        | List everything: clusters, version, nodegroups, addons, nodes, and stacks     |
+| `cluster list clusters`                   | List EKS clusters                                                             |
+| `cluster list version`                    | Show current EKS control plane version and compare with cluster.yaml          |
+| `cluster list nodegroups`                 | List EKS nodegroups                                                           |
+| `cluster list nodes`                      | List Kubernetes nodes                                                         |
+| `cluster list addons`                     | List EKS addons                                                               |
+| `cluster list access-entries`             | List EKS access entries                                                       |
+| `cluster list insights`                   | List EKS insights for the cluster                                             |
+| `cluster list stacks`                     | List CloudFormation stacks managed by eksctl                                  |
+| `cluster list all-addons-all-versions`    | List all available addon versions compatible with the current cluster         |
+| `cluster list all-addons-raw-json`        | Raw JSON of all available addon versions compatible with the current cluster  |
+| `cluster list nodegroup-size <name>`      | Show the min, max, and desired size of a nodegroup                            |
+| `cluster list nodes-for-nodegroup <name>` | List nodes belonging to a specific nodegroup                                  |
+| `cluster list nodes-for-new-nodegroups`   | List nodes in nodegroups defined in cluster.yaml                              |
+| `cluster list nodes-for-old-nodegroups`   | List nodes in nodegroups not defined in cluster.yaml                          |
+| `cluster list old-nodes-not-cordoned`     | List nodes in old nodegroups that are not yet cordoned                        |
 
 ### describe
 
-| Command                   | Description                                       |
-|---------------------------|---------------------------------------------------|
-| `cluster describe stacks` | Describe CloudFormation stacks managed by eksctl  |
+| Command                         | Description                                       |
+|---------------------------------|---------------------------------------------------|
+| `cluster describe stacks`       | Describe CloudFormation stacks managed by eksctl  |
+| `cluster describe insight <id>` | Describe a single EKS insight in detail           |
 
 ### document
 
@@ -86,12 +94,17 @@ router without arguments to see its available sub-commands.
 
 ### upgrade
 
-| Command                                     | Description                                          |
-|---------------------------------------------|------------------------------------------------------|
-| `cluster upgrade controlplane`              | Upgrade the EKS control plane to match cluster.yaml  |
-| `cluster upgrade addon <name>`              | Upgrade a single EKS addon                           |
-| `cluster upgrade addons`                    | Upgrade all EKS addons as defined in cluster.yaml    |
-| `cluster upgrade fast-end-to-end-automatic` | Automated end-to-end cluster upgrade (fast path)     |
+| Command                                                   | Description                                                     |
+|-----------------------------------------------------------|-----------------------------------------------------------------|
+| `cluster upgrade controlplane [--dry-run]`                | Upgrade the EKS control plane to match cluster.yaml             |
+| `cluster upgrade addon <name> [target-version] [--force]` | Upgrade a single EKS addon                                      |
+| `cluster upgrade addons [--force]`                        | Upgrade all EKS addons as defined in cluster.yaml               |
+| `cluster upgrade cluster-auto-mode [--dry-run]`           | Reconcile EKS auto mode toggle to match cluster.yaml            |
+| `cluster upgrade cluster-endpoints [--dry-run]`           | Reconcile cluster endpoint access config to match cluster.yaml  |
+| `cluster upgrade cluster-logging [--dry-run]`             | Reconcile control plane logging config to match cluster.yaml    |
+| `cluster upgrade cluster-access [--dry-run]`              | Reconcile cluster access config to match cluster.yaml           |
+| `cluster upgrade yaml-reconciliation [--dry-run]`         | Reconcile all cluster-level settings to match cluster.yaml      |
+| `cluster upgrade fast-end-to-end-automatic`               | Automated end-to-end cluster upgrade (fast path)                |
 
 ### cordon
 
