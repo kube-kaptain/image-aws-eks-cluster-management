@@ -29,4 +29,4 @@ fi
 
 cluster_name=$(yq '.metadata.name' "${CLUSTER_CONFIG}")
 
-aws eks describe-insight --cluster-name "${cluster_name}" --id "${insight_id}"
+AWS_PAGER="" aws eks describe-insight --cluster-name "${cluster_name}" --id "${insight_id}"

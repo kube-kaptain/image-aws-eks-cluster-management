@@ -25,7 +25,7 @@ fi
 cluster_name=$(yq '.metadata.name' "${CLUSTER_CONFIG}")
 
 echo "Setting nodegroup ${nodegroup_name} minSize to ${min_size}..."
-aws eks update-nodegroup-config \
+AWS_PAGER="" aws eks update-nodegroup-config \
   --cluster-name "${cluster_name}" \
   --nodegroup-name "${nodegroup_name}" \
   --scaling-config "minSize=${min_size}"
