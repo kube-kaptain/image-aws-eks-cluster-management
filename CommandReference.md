@@ -92,17 +92,17 @@ router without arguments to see its available sub-commands.
 
 ### upgrade
 
-| Command                                     | Description                                                     |
-|---------------------------------------------|-----------------------------------------------------------------|
-| `cluster upgrade controlplane`              | Upgrade the EKS control plane to match cluster.yaml             |
-| `cluster upgrade addon <name>`              | Upgrade a single EKS addon                                      |
-| `cluster upgrade addons`                    | Upgrade all EKS addons as defined in cluster.yaml               |
-| `cluster upgrade cluster-auto-mode`         | Reconcile EKS auto mode toggle to match cluster.yaml            |
-| `cluster upgrade cluster-endpoints`         | Reconcile cluster endpoint access config to match cluster.yaml  |
-| `cluster upgrade cluster-logging`           | Reconcile control plane logging config to match cluster.yaml    |
-| `cluster upgrade cluster-access`            | Reconcile cluster access config to match cluster.yaml           |
-| `cluster upgrade yaml-reconciliation`       | Reconcile all cluster-level settings to match cluster.yaml      |
-| `cluster upgrade fast-end-to-end-automatic` | Automated end-to-end cluster upgrade (fast path)                |
+| Command                                                   | Description                                                     |
+|-----------------------------------------------------------|-----------------------------------------------------------------|
+| `cluster upgrade controlplane [--dry-run]`                | Upgrade the EKS control plane to match cluster.yaml             |
+| `cluster upgrade addon <name> [target-version] [--force]` | Upgrade a single EKS addon                                      |
+| `cluster upgrade addons [--force]`                        | Upgrade all EKS addons as defined in cluster.yaml               |
+| `cluster upgrade cluster-auto-mode [--dry-run]`           | Reconcile EKS auto mode toggle to match cluster.yaml            |
+| `cluster upgrade cluster-endpoints [--dry-run]`           | Reconcile cluster endpoint access config to match cluster.yaml  |
+| `cluster upgrade cluster-logging [--dry-run]`             | Reconcile control plane logging config to match cluster.yaml    |
+| `cluster upgrade cluster-access [--dry-run]`              | Reconcile cluster access config to match cluster.yaml           |
+| `cluster upgrade yaml-reconciliation [--dry-run]`         | Reconcile all cluster-level settings to match cluster.yaml      |
+| `cluster upgrade fast-end-to-end-automatic`               | Automated end-to-end cluster upgrade (fast path)                |
 
 ### cordon
 
