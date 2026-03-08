@@ -64,6 +64,7 @@ router without arguments to see its available sub-commands.
 | `cluster list nodes`                      | List Kubernetes nodes                                                         |
 | `cluster list addons`                     | List EKS addons                                                               |
 | `cluster list access-entries`             | List EKS access entries                                                       |
+| `cluster list insights`                   | List EKS insights for the cluster                                             |
 | `cluster list stacks`                     | List CloudFormation stacks managed by eksctl                                  |
 | `cluster list all-addons-all-versions`    | List all available addon versions compatible with the current cluster         |
 | `cluster list all-addons-raw-json`        | Raw JSON of all available addon versions compatible with the current cluster  |
@@ -75,9 +76,10 @@ router without arguments to see its available sub-commands.
 
 ### describe
 
-| Command                   | Description                                       |
-|---------------------------|---------------------------------------------------|
-| `cluster describe stacks` | Describe CloudFormation stacks managed by eksctl  |
+| Command                         | Description                                       |
+|---------------------------------|---------------------------------------------------|
+| `cluster describe stacks`       | Describe CloudFormation stacks managed by eksctl  |
+| `cluster describe insight <id>` | Describe a single EKS insight in detail           |
 
 ### document
 

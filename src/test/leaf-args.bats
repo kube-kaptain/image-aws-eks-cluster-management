@@ -83,6 +83,11 @@ setup() {
   [[ "${status}" -eq 1 ]]
 }
 
+@test "cluster-list-insights: rejects args" {
+  run bash "${SCRIPTS_DIR}/cluster-list-insights" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
 # --- delete ---
 
 @test "cluster-delete-cluster: rejects args" {
@@ -464,4 +469,19 @@ setup() {
   run bash "${SCRIPTS_DIR}/cluster-create-access-entry"
   [[ "${status}" -eq 1 ]]
   [[ "${output}" == *"Usage"* ]]
+}
+
+# ====================================================================
+# Describe insight: requires insight ID
+# ====================================================================
+
+@test "cluster-describe-insight: no args exits 1" {
+  run bash "${SCRIPTS_DIR}/cluster-describe-insight"
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Usage"* ]]
+}
+
+@test "cluster-describe-insight: too many args exits 1" {
+  run bash "${SCRIPTS_DIR}/cluster-describe-insight" one two
+  [[ "${status}" -eq 1 ]]
 }
