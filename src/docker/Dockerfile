@@ -39,6 +39,7 @@ RUN apt-get install \
     ca-certificates \
     curl \
     debianutils \
+    less \
     dnsutils \
     iputils-ping \
     netcat-openbsd \
