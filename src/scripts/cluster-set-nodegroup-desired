@@ -25,7 +25,7 @@ fi
 cluster_name=$(yq '.metadata.name' "${CLUSTER_CONFIG}")
 
 echo "Setting nodegroup ${nodegroup_name} desiredSize to ${desired_size}..."
-aws eks update-nodegroup-config \
+AWS_PAGER="" aws eks update-nodegroup-config \
   --cluster-name "${cluster_name}" \
   --nodegroup-name "${nodegroup_name}" \
   --scaling-config "desiredSize=${desired_size}"

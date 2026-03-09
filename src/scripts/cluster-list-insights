@@ -24,6 +24,6 @@ cluster_name=$(yq '.metadata.name' "${CLUSTER_CONFIG}")
 
 echo "EKS insights for ${cluster_name}:"
 echo ""
-aws eks list-insights --cluster-name "${cluster_name}"
+AWS_PAGER="" aws eks list-insights --cluster-name "${cluster_name}"
 echo ""
 echo "For more detail run 'cluster describe insight <ID>' for each insight."

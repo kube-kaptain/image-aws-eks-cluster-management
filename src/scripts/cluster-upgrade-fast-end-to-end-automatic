@@ -51,7 +51,7 @@ print_banner "Step 1: Validating requirements"
 "${CLUSTER_SCRIPT_DIR}/cluster-validate-image"
 echo ""
 echo "Checking AWS identity..."
-aws sts get-caller-identity
+AWS_PAGER="" aws sts get-caller-identity
 echo ""
 echo "Checking Kubernetes access..."
 if kubectl get ns > /dev/null 2>&1; then
