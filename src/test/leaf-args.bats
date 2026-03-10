@@ -88,6 +88,36 @@ setup() {
   [[ "${status}" -eq 1 ]]
 }
 
+@test "cluster-list-all-pods: rejects args" {
+  run bash "${SCRIPTS_DIR}/cluster-list-all-pods" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
+@test "cluster-list-all-unstable-pods: rejects args" {
+  run bash "${SCRIPTS_DIR}/cluster-list-all-unstable-pods" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
+@test "k-get-all-pods: rejects args" {
+  run bash "${SCRIPTS_DIR}/k-get-all-pods" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
+@test "k-get-all-unstable-pods: rejects args" {
+  run bash "${SCRIPTS_DIR}/k-get-all-unstable-pods" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
+@test "cluster-list-all-stable-pods: rejects args" {
+  run bash "${SCRIPTS_DIR}/cluster-list-all-stable-pods" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
+@test "k-get-all-stable-pods: rejects args" {
+  run bash "${SCRIPTS_DIR}/k-get-all-stable-pods" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
 # --- insights ---
 
 @test "cluster-refresh-insights: rejects args" {

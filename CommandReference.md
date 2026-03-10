@@ -73,6 +73,9 @@ router without arguments to see its available sub-commands.
 | `cluster list nodes-for-new-nodegroups`   | List nodes in nodegroups defined in cluster.yaml                              |
 | `cluster list nodes-for-old-nodegroups`   | List nodes in nodegroups not defined in cluster.yaml                          |
 | `cluster list old-nodes-not-cordoned`     | List nodes in old nodegroups that are not yet cordoned                        |
+| `cluster list all-pods`                   | List all pods across all namespaces                                           |
+| `cluster list all-unstable-pods`          | List pods not running, not ready, or with restarts across all namespaces      |
+| `cluster list all-stable-pods`            | List pods that are running, ready, and have zero restarts                     |
 
 ### describe
 
@@ -168,5 +171,8 @@ router without arguments to see its available sub-commands.
 | `k-public <args>`               | Shorthand for `kubectl -n kube-public`                                    |
 | `k-run-platform <args>`         | Smart lookup: `kubectl -n <run-platform-*>` with caching                  |
 | `k-run-env <args>`              | Smart lookup: `kubectl -n <run-*>` (excluding run-platform) with caching  |
+| `k-get-all-pods`                | List all pods across all namespaces                                       |
+| `k-get-all-unstable-pods`       | List pods not running, not ready, or with restarts                        |
+| `k-get-all-stable-pods`         | List pods that are running, ready, and have zero restarts                 |
 | `k-exec-sh <namespace> <pod>`   | Exec into a pod with `/bin/sh`                                            |
 | `k-exec-bash <namespace> <pod>` | Exec into a pod with `/bin/bash`                                          |
