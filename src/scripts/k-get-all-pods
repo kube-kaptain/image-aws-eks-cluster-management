@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2025-2026 Kaptain contributors (Fred Cooke)
+#
+# List all pods across all namespaces
+#
+# Usage: k-get-all-pods
+set -euo pipefail
+
+if [[ $# -ne 0 ]]; then
+  echo "ERROR: This command takes no arguments" >&2
+  echo "Usage: k-get-all-pods" >&2
+  exit 1
+fi
+
+kubectl get pods --all-namespaces

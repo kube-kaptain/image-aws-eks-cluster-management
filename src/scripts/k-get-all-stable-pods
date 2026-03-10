@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2025-2026 Kaptain contributors (Fred Cooke)
+#
+# List pods that are in a healthy steady state across all namespaces
+#
+# Uses structured YAML output from kubectl to avoid parsing human-readable
+# table formats. Extracts one line per pod via yq, then filters in bash.
+# Output emulates the familiar kubectl get pods format.
+#
+# Shows pods matching all of:
+#   - Phase is Running
+#   - All containers are ready
+#   - Zero restart count
+#
+# Usage: k-get-all-stable-pods
+set -euo pipefail
+
+if [[ $# -ne 0 ]]; then
+  echo "ERROR: This command takes no arguments" >&2
+  echo "Usage: k-get-all-stable-pods" >&2
+  exit 1
+fi
+
+# Format seconds into kubectl-style age string (eg 5d, 3h12m, 42s)
+format_age() {
+  local seconds="$1"
+  local days=$((seconds / 86400))
+  local hours=$(( (seconds % 86400) / 3600 ))
+  local minutes=$(( (seconds % 3600) / 60 ))
+
+  if [[ ${days} -gt 0 ]]; then
+    echo "${days}d"
+  elif [[ ${hours} -gt 0 ]]; then
+    echo "${hours}h${minutes}m"
+  elif [[ ${minutes} -gt 0 ]]; then
+    echo "${minutes}m"
+  else
+    echo "${seconds}s"
+  fi
+}
+
+now=$(date +%s)
+
+# Single yq call: extract one line per pod with all fields needed for filtering
+# Fields: namespace, name, phase, ready_count, total_count, restarts, status_reason, age_timestamp
+pod_data=$(kubectl get pods --all-namespaces -o yaml | yq -r '
+  .items[] |
+  [
+    .metadata.namespace,                                                       # NAMESPACE column
+    .metadata.name,                                                            # NAME column
+    .status.phase,                                                             # Used for filtering (Running/Succeeded/Pending/Failed)
+    (.status.containerStatuses // [] | map(select(.ready == true)) | length),  # READY numerator (eg the 1 in 1/2)
+    (.status.containerStatuses // [] | length),                                # READY denominator (eg the 2 in 1/2)
+    (.status.containerStatuses // [] | map(.restartCount) | add // 0),         # RESTARTS column (sum across all containers)
+    ((.status.containerStatuses // [])[] | .state | to_entries[0] | select(.value.reason != null) | .value.reason) // .status.phase,  # STATUS column (CrashLoopBackOff etc, or phase as fallback)
+    .metadata.creationTimestamp                                                # AGE column (converted to duration in bash)
+  ] | @tsv')
+
+if [[ -z "${pod_data}" ]]; then
+  echo "No pods found."
+  exit 0
+fi
+
+header_printed=false
+found=0
+while IFS=$'\t' read -r namespace name phase ready_count total_count restarts status_reason age_timestamp; do
+  # Only include Running pods with all containers ready and zero restarts
+  if [[ "${phase}" != "Running" ]]; then
+    continue
+  fi
+
+  if [[ "${ready_count}" -ne "${total_count}" ]]; then
+    continue
+  fi
+
+  if [[ "${restarts}" -gt 0 ]]; then
+    continue
+  fi
+
+  if [[ "${header_printed}" != "true" ]]; then
+    printf "%-20s %-50s %-8s %-20s %8s   %s\n" "NAMESPACE" "NAME" "READY" "STATUS" "RESTARTS" "AGE"
+    header_printed=true
+  fi
+
+  ready_display="${ready_count}/${total_count}"
+  created=$(date -d "${age_timestamp}" +%s)
+  age=$(format_age $((now - created)))
+  printf "%-20s %-50s %-8s %-20s %8s   %s\n" "${namespace}" "${name}" "${ready_display}" "${status_reason}" "${restarts}" "${age}"
+  found=$((found + 1))
+done <<< "${pod_data}"
+
+if [[ ${found} -eq 0 ]]; then
+  echo "No stable pods found."
+else
+  echo ""
+  echo "${found} stable pod(s) found."
+fi
