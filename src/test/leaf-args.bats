@@ -203,6 +203,12 @@ setup() {
   [[ "${status}" -eq 1 ]]
 }
 
+@test "cluster-upgrade-prepare-for-migration: rejects unknown flag" {
+  run bash "${SCRIPTS_DIR}/cluster-upgrade-prepare-for-migration" --bogus
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Unknown"* ]]
+}
+
 @test "cluster-describe-stacks: rejects args" {
   run bash "${SCRIPTS_DIR}/cluster-describe-stacks" bogus
   [[ "${status}" -eq 1 ]]

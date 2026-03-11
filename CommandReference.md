@@ -107,6 +107,7 @@ router without arguments to see its available sub-commands.
 | `cluster upgrade cluster-logging [--dry-run]`             | Reconcile control plane logging config to match cluster.yaml    |
 | `cluster upgrade cluster-access [--dry-run]`              | Reconcile cluster access config to match cluster.yaml           |
 | `cluster upgrade yaml-reconciliation [--dry-run]`         | Reconcile all cluster-level settings to match cluster.yaml      |
+| `cluster upgrade prepare-for-migration [--dry-run]`       | Non-disruptive upgrade steps, stops before draining             |
 | `cluster upgrade fast-end-to-end-automatic`               | Automated end-to-end cluster upgrade (fast path)                |
 
 ### cordon
