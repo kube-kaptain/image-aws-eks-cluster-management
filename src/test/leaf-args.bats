@@ -492,6 +492,29 @@ setup() {
   [[ "${output}" == *"Unknown"* ]]
 }
 
+@test "cluster-create-nodegroup: rejects unknown flag" {
+  run bash "${SCRIPTS_DIR}/cluster-create-nodegroup" --bogus
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Unknown"* ]]
+}
+
+@test "cluster-create-nodegroup: no args exits 1" {
+  run bash "${SCRIPTS_DIR}/cluster-create-nodegroup"
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Usage"* ]]
+}
+
+@test "cluster-create-nodegroup: too many args exits 1" {
+  run bash "${SCRIPTS_DIR}/cluster-create-nodegroup" one two
+  [[ "${status}" -eq 1 ]]
+}
+
+@test "cluster-create-nodegroups: rejects unknown flag" {
+  run bash "${SCRIPTS_DIR}/cluster-create-nodegroups" --bogus
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Unknown"* ]]
+}
+
 @test "cluster-upgrade-controlplane: rejects unknown flag" {
   run bash "${SCRIPTS_DIR}/cluster-upgrade-controlplane" --bogus
   [[ "${status}" -eq 1 ]]
