@@ -1,0 +1,117 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2025-2026 Kaptain contributors (Fred Cooke)
+#
+# Non-disruptive upgrade steps: upgrade addons and control plane, create new
+# nodegroups, lock and cordon old nodegroups. Stops before draining so you
+# can inspect the cluster and proceed manually when ready.
+#
+# What this does:
+#   1. Upgrade addons to latest for the current control plane version
+#   2. Upgrade the control plane to the version in cluster.yaml
+#   3. Upgrade addons to match the new control plane version
+#   4. Create new nodegroups for the new version
+#   5. Lock old nodegroup sizes to prevent autoscaler changes
+#   6. Cordon old nodegroups to prevent new pods scheduling on them
+#
+# After this completes, workloads are still running on old nodegroups.
+# Next steps (manual):
+#   - Inspect the cluster to confirm new nodegroups are healthy
+#   - Run 'cluster drain old-nodegroups' to migrate workloads
+#   - Run 'cluster delete old-nodegroups' to remove old nodegroups
+#   - Run 'cluster upgrade yaml-reconciliation' to reconcile settings
+#
+# Usage: cluster upgrade prepare-for-migration [--dry-run]
+set -euo pipefail
+
+dry_run=false
+case "${1:-}" in
+  --dry-run)
+    dry_run=true
+    shift
+    ;;
+  "")
+    ;;
+  *)
+    echo "ERROR: Unknown flag '${1}'" >&2
+    echo "Usage: cluster upgrade prepare-for-migration [--dry-run]" >&2
+    exit 1
+    ;;
+esac
+
+CLUSTER_SCRIPT_DIR="${CLUSTER_SCRIPT_DIR:?CLUSTER_SCRIPT_DIR must be set}"
+CLUSTER_CONFIG="${CLUSTER_CONFIG:?CLUSTER_CONFIG must be set}"
+
+if [[ ! -f "${CLUSTER_CONFIG}" ]]; then
+  echo "ERROR: ${CLUSTER_CONFIG} not found" >&2
+  exit 1
+fi
+
+cluster_name=$(yq '.metadata.name' "${CLUSTER_CONFIG}")
+configured_version=$(yq '.metadata.version' "${CLUSTER_CONFIG}")
+existing_version=$(eksctl get cluster --name "${cluster_name}" -o yaml | yq '.[0].Version')
+
+echo "=== Step 1/6: Upgrading addons to latest for ${existing_version} ==="
+if [[ "${dry_run}" == "true" ]]; then
+  echo "No dry run available for addon upgrade, listing current addons instead."
+  echo "Real run would upgrade all addons to latest for ${existing_version}."
+  "${CLUSTER_SCRIPT_DIR}/cluster-list-addons"
+else
+  "${CLUSTER_SCRIPT_DIR}/cluster-upgrade-addons"
+fi
+echo ""
+
+echo "=== Step 2/6: Upgrading control plane to ${configured_version} ==="
+if [[ "${dry_run}" == "true" ]]; then
+  "${CLUSTER_SCRIPT_DIR}/cluster-upgrade-controlplane" --dry-run
+else
+  "${CLUSTER_SCRIPT_DIR}/cluster-upgrade-controlplane"
+fi
+echo ""
+
+echo "=== Step 3/6: Upgrading addons to match ${configured_version} ==="
+if [[ "${dry_run}" == "true" ]]; then
+  echo "No dry run available for addon upgrade, no point re-listing as unchanged."
+  echo "Real run would upgrade all addons to match ${configured_version}."
+else
+  "${CLUSTER_SCRIPT_DIR}/cluster-upgrade-addons"
+fi
+echo ""
+
+echo "=== Step 4/6: Creating new nodegroups for ${configured_version} ==="
+if [[ "${dry_run}" == "true" ]]; then
+  "${CLUSTER_SCRIPT_DIR}/cluster-create-nodegroups" --dry-run
+else
+  "${CLUSTER_SCRIPT_DIR}/cluster-create-nodegroups"
+fi
+echo ""
+
+echo "=== Step 5/6: Locking old nodegroup sizes ==="
+if [[ "${dry_run}" == "true" ]]; then
+  echo "No dry run available for locksize."
+  echo "Real run would find all old nodegroups and lock min and max to their current desired size."
+else
+  "${CLUSTER_SCRIPT_DIR}/cluster-locksize-old-nodegroups"
+fi
+echo ""
+
+echo "=== Step 6/6: Cordoning old nodegroups ==="
+if [[ "${dry_run}" == "true" ]]; then
+  echo "No dry run available for cordon."
+  echo "Real run would cordon all nodes in old nodegroups to prevent new pods scheduling on them."
+else
+  "${CLUSTER_SCRIPT_DIR}/cluster-cordon-old-nodegroups"
+fi
+echo ""
+
+if [[ "${dry_run}" == "true" ]]; then
+  echo "Dry run complete. No changes were made."
+else
+  echo "Preparation complete for ${cluster_name}."
+  echo ""
+  echo "Control plane upgraded, addons upgraded, all other steps performed are reversible and can be backed out."
+  echo "New nodegroup(s) created and ready. Old nodegroups are locked and cordoned. Workloads are still running on them."
+  echo ""
+  echo "Run \`cluster document maintenance\` for a refresher on next steps."
+  echo ""
+fi

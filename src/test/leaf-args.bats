@@ -142,12 +142,17 @@ setup() {
   [[ "${status}" -eq 1 ]]
 }
 
+@test "cluster-delete-addons: rejects args" {
+  run bash "${SCRIPTS_DIR}/cluster-delete-addons" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
 @test "cluster-delete-access-entries: rejects args" {
   run bash "${SCRIPTS_DIR}/cluster-delete-access-entries" bogus
   [[ "${status}" -eq 1 ]]
 }
 
-# --- cordon/uncordon/drain/locksize old-nodegroups ---
+# --- cordon/uncordon/locksize/unlocksize old-nodegroups ---
 
 @test "cluster-cordon-old-nodegroups: rejects args" {
   run bash "${SCRIPTS_DIR}/cluster-cordon-old-nodegroups" bogus
@@ -162,6 +167,44 @@ setup() {
 @test "cluster-locksize-old-nodegroups: rejects args" {
   run bash "${SCRIPTS_DIR}/cluster-locksize-old-nodegroups" bogus
   [[ "${status}" -eq 1 ]]
+}
+
+@test "cluster-unlocksize-old-nodegroups: rejects args" {
+  run bash "${SCRIPTS_DIR}/cluster-unlocksize-old-nodegroups" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
+# --- cordon/uncordon/delete/drain/locksize/unlocksize new-nodegroups ---
+
+@test "cluster-cordon-new-nodegroups: rejects args" {
+  run bash "${SCRIPTS_DIR}/cluster-cordon-new-nodegroups" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
+@test "cluster-uncordon-new-nodegroups: rejects args" {
+  run bash "${SCRIPTS_DIR}/cluster-uncordon-new-nodegroups" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
+@test "cluster-delete-new-nodegroups: rejects args" {
+  run bash "${SCRIPTS_DIR}/cluster-delete-new-nodegroups" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
+@test "cluster-locksize-new-nodegroups: rejects args" {
+  run bash "${SCRIPTS_DIR}/cluster-locksize-new-nodegroups" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
+@test "cluster-unlocksize-new-nodegroups: rejects args" {
+  run bash "${SCRIPTS_DIR}/cluster-unlocksize-new-nodegroups" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
+@test "cluster-drain-new-nodegroups: rejects unknown flag" {
+  run bash "${SCRIPTS_DIR}/cluster-drain-new-nodegroups" --bogus
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Unknown"* ]]
 }
 
 # --- other flag scripts (--dry-run) ---
@@ -201,6 +244,12 @@ setup() {
 @test "cluster-upgrade-fast-end-to-end-automatic: rejects args" {
   run bash "${SCRIPTS_DIR}/cluster-upgrade-fast-end-to-end-automatic" bogus
   [[ "${status}" -eq 1 ]]
+}
+
+@test "cluster-upgrade-prepare-for-migration: rejects unknown flag" {
+  run bash "${SCRIPTS_DIR}/cluster-upgrade-prepare-for-migration" --bogus
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Unknown"* ]]
 }
 
 @test "cluster-describe-stacks: rejects args" {
@@ -343,6 +392,19 @@ setup() {
   [[ "${status}" -eq 1 ]]
 }
 
+# --- unlocksize ---
+
+@test "cluster-unlocksize-nodegroup: no args exits 1" {
+  run bash "${SCRIPTS_DIR}/cluster-unlocksize-nodegroup"
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Usage"* ]]
+}
+
+@test "cluster-unlocksize-nodegroup: too many args exits 1" {
+  run bash "${SCRIPTS_DIR}/cluster-unlocksize-nodegroup" one two
+  [[ "${status}" -eq 1 ]]
+}
+
 # --- list with single arg ---
 
 @test "cluster-list-nodegroup-size: no args exits 1" {
@@ -431,6 +493,46 @@ setup() {
 
 @test "cluster-create-addons: rejects unknown flag" {
   run bash "${SCRIPTS_DIR}/cluster-create-addons" --bogus
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Unknown"* ]]
+}
+
+@test "cluster-create-addon: rejects unknown flag" {
+  run bash "${SCRIPTS_DIR}/cluster-create-addon" --bogus
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Unknown"* ]]
+}
+
+@test "cluster-create-addon: no args exits 1" {
+  run bash "${SCRIPTS_DIR}/cluster-create-addon"
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Usage"* ]]
+}
+
+@test "cluster-create-addon: too many args exits 1" {
+  run bash "${SCRIPTS_DIR}/cluster-create-addon" one two
+  [[ "${status}" -eq 1 ]]
+}
+
+@test "cluster-create-nodegroup: rejects unknown flag" {
+  run bash "${SCRIPTS_DIR}/cluster-create-nodegroup" --bogus
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Unknown"* ]]
+}
+
+@test "cluster-create-nodegroup: no args exits 1" {
+  run bash "${SCRIPTS_DIR}/cluster-create-nodegroup"
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Usage"* ]]
+}
+
+@test "cluster-create-nodegroup: too many args exits 1" {
+  run bash "${SCRIPTS_DIR}/cluster-create-nodegroup" one two
+  [[ "${status}" -eq 1 ]]
+}
+
+@test "cluster-create-nodegroups: rejects unknown flag" {
+  run bash "${SCRIPTS_DIR}/cluster-create-nodegroups" --bogus
   [[ "${status}" -eq 1 ]]
   [[ "${output}" == *"Unknown"* ]]
 }

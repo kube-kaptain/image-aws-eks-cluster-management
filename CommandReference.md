@@ -9,20 +9,21 @@ guides showing how these commands fit together, see the [README](README.md).
 These scripts dispatch to sub-commands based on the first argument. Run any
 router without arguments to see its available sub-commands.
 
-| Script             | Description                                                      |
-|--------------------|------------------------------------------------------------------|
-| `cluster`          | Top-level router, delegates to `cluster-<verb>` scripts          |
-| `cluster-create`   | Create router, delegates to `cluster-create-<noun>` scripts      |
-| `cluster-delete`   | Delete router, delegates to `cluster-delete-<noun>` scripts      |
-| `cluster-list`     | List router, delegates to `cluster-list-<noun>` scripts          |
-| `cluster-upgrade`  | Upgrade router, delegates to `cluster-upgrade-<noun>` scripts    |
-| `cluster-cordon`   | Cordon router, delegates to `cluster-cordon-<noun>` scripts      |
-| `cluster-uncordon` | Uncordon router, delegates to `cluster-uncordon-<noun>` scripts  |
-| `cluster-drain`    | Drain router, delegates to `cluster-drain-<noun>` scripts        |
-| `cluster-locksize` | Locksize router, delegates to `cluster-locksize-<noun>` scripts  |
-| `cluster-set`      | Set router, delegates to `cluster-set-<noun>` scripts            |
-| `cluster-describe` | Describe router, delegates to `cluster-describe-<noun>` scripts  |
-| `cluster-document` | Document router, delegates to `cluster-document-<noun>` scripts  |
+| Script               | Description                                                         |
+|----------------------|---------------------------------------------------------------------|
+| `cluster`            | Top-level router, delegates to `cluster-<verb>` scripts             |
+| `cluster-create`     | Create router, delegates to `cluster-create-<noun>` scripts         |
+| `cluster-delete`     | Delete router, delegates to `cluster-delete-<noun>` scripts         |
+| `cluster-list`       | List router, delegates to `cluster-list-<noun>` scripts             |
+| `cluster-upgrade`    | Upgrade router, delegates to `cluster-upgrade-<noun>` scripts       |
+| `cluster-cordon`     | Cordon router, delegates to `cluster-cordon-<noun>` scripts         |
+| `cluster-uncordon`   | Uncordon router, delegates to `cluster-uncordon-<noun>` scripts     |
+| `cluster-drain`      | Drain router, delegates to `cluster-drain-<noun>` scripts           |
+| `cluster-locksize`   | Locksize router, delegates to `cluster-locksize-<noun>` scripts     |
+| `cluster-unlocksize` | Unlocksize router, delegates to `cluster-unlocksize-<noun>` scripts |
+| `cluster-set`        | Set router, delegates to `cluster-set-<noun>` scripts               |
+| `cluster-describe`   | Describe router, delegates to `cluster-describe-<noun>` scripts     |
+| `cluster-document`   | Document router, delegates to `cluster-document-<noun>` scripts     |
 
 
 ## Cluster Lifecycle
@@ -34,6 +35,7 @@ router without arguments to see its available sub-commands.
 | `cluster create cluster [--dry-run]`          | Create an EKS cluster using eksctl                                         |
 | `cluster create nodegroup <name> [--dry-run]` | Create a single EKS nodegroup from cluster.yaml                            |
 | `cluster create nodegroups [--dry-run]`       | Create all EKS nodegroups defined in cluster.yaml                          |
+| `cluster create addon <name> [--force]`       | Create a single EKS addon from cluster.yaml                                |
 | `cluster create addons [--force]`             | Create all EKS addons defined in cluster.yaml                              |
 | `cluster create access-entry <arn> [options]` | Create a single EKS access entry                                           |
 | `cluster create access-entries`               | Create all missing access entries defined in cluster.yaml                  |
@@ -46,7 +48,9 @@ router without arguments to see its available sub-commands.
 | `cluster delete cluster`            | Delete an EKS cluster with interactive confirmation  |
 | `cluster delete nodegroup <name>`   | Delete an EKS nodegroup                              |
 | `cluster delete old-nodegroups`     | Delete all nodegroups not defined in cluster.yaml    |
+| `cluster delete new-nodegroups`     | Delete all nodegroups defined in cluster.yaml        |
 | `cluster delete addon <name>`       | Delete an EKS addon                                  |
+| `cluster delete addons`             | Delete all addons not defined in cluster.yaml        |
 | `cluster delete access-entry <arn>` | Delete a single EKS access entry                     |
 | `cluster delete access-entries`     | Delete access entries not defined in cluster.yaml    |
 
@@ -107,6 +111,7 @@ router without arguments to see its available sub-commands.
 | `cluster upgrade cluster-logging [--dry-run]`             | Reconcile control plane logging config to match cluster.yaml    |
 | `cluster upgrade cluster-access [--dry-run]`              | Reconcile cluster access config to match cluster.yaml           |
 | `cluster upgrade yaml-reconciliation [--dry-run]`         | Reconcile all cluster-level settings to match cluster.yaml      |
+| `cluster upgrade prepare-for-migration [--dry-run]`       | Non-disruptive upgrade steps, stops before draining             |
 | `cluster upgrade fast-end-to-end-automatic`               | Automated end-to-end cluster upgrade (fast path)                |
 
 ### cordon
@@ -116,6 +121,7 @@ router without arguments to see its available sub-commands.
 | `cluster cordon node <name>`       | Cordon a single node to prevent new pods being scheduled    |
 | `cluster cordon nodegroup <name>`  | Cordon all nodes in a nodegroup                             |
 | `cluster cordon old-nodegroups`    | Cordon all nodes in nodegroups not defined in cluster.yaml  |
+| `cluster cordon new-nodegroups`    | Cordon all nodes in nodegroups defined in cluster.yaml      |
 
 ### uncordon
 
@@ -124,6 +130,7 @@ router without arguments to see its available sub-commands.
 | `cluster uncordon node <name>`      | Uncordon a single node to allow pods to be scheduled again    |
 | `cluster uncordon nodegroup <name>` | Uncordon all nodes in a nodegroup                             |
 | `cluster uncordon old-nodegroups`   | Uncordon all nodes in nodegroups not defined in cluster.yaml  |
+| `cluster uncordon new-nodegroups`   | Uncordon all nodes in nodegroups defined in cluster.yaml      |
 
 ### drain
 
@@ -132,6 +139,7 @@ router without arguments to see its available sub-commands.
 | `cluster drain node <name>`      | Drain a single node, evicting all pods                     |
 | `cluster drain nodegroup <name>` | Drain all nodes in a nodegroup                             |
 | `cluster drain old-nodegroups`   | Drain all nodes in nodegroups not defined in cluster.yaml  |
+| `cluster drain new-nodegroups`   | Drain all nodes in nodegroups defined in cluster.yaml      |
 
 ### locksize
 
@@ -139,6 +147,15 @@ router without arguments to see its available sub-commands.
 |-------------------------------------|----------------------------------------------------------------|
 | `cluster locksize nodegroup <name>` | Lock a nodegroup size by setting min and max to current count  |
 | `cluster locksize old-nodegroups`   | Lock the size of all nodegroups not defined in cluster.yaml    |
+| `cluster locksize new-nodegroups`   | Lock the size of all nodegroups defined in cluster.yaml        |
+
+### unlocksize
+
+| Command                               | Description                                                              |
+|---------------------------------------|--------------------------------------------------------------------------|
+| `cluster unlocksize nodegroup <name>` | Restore a nodegroup to its original min/max from before locksize         |
+| `cluster unlocksize old-nodegroups`   | Restore original min/max for all nodegroups not defined in cluster.yaml  |
+| `cluster unlocksize new-nodegroups`   | Restore original min/max for all nodegroups defined in cluster.yaml      |
 
 ### set
 
