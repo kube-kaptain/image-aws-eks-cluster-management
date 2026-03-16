@@ -62,7 +62,7 @@ if [[ "${managed_count}" -eq 0 && "${unmanaged_count}" -eq 0 ]]; then
 fi
 
 # Get nodegroup names defined in cluster.yaml
-configured_nodegroups=$(yq '.managedNodeGroups[].name // .nodeGroups[].name' "${CLUSTER_CONFIG}" 2>/dev/null || true)
+configured_nodegroups=$(yq '.managedNodeGroups[].name // .nodeGroups[].name' "${CLUSTER_CONFIG}")
 
 # Get nodegroup names currently on the cluster
 live_nodegroups=$(eksctl get nodegroups --cluster "${cluster_name}" -o yaml | yq '.[].Name')
