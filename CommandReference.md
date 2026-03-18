@@ -74,6 +74,8 @@ router without arguments to see its available sub-commands.
 | `cluster list all-addons-raw-json`        | Raw JSON of all available addon versions compatible with the current cluster  |
 | `cluster list nodegroup-size <name>`      | Show the min, max, and desired size of a nodegroup                            |
 | `cluster list nodes-for-nodegroup <name>` | List nodes belonging to a specific nodegroup                                  |
+| `cluster list new-nodegroups`             | List nodegroup names that are defined in cluster.yaml                         |
+| `cluster list old-nodegroups`             | List nodegroup names that are not defined in cluster.yaml                     |
 | `cluster list nodes-for-new-nodegroups`   | List nodes in nodegroups defined in cluster.yaml                              |
 | `cluster list nodes-for-old-nodegroups`   | List nodes in nodegroups not defined in cluster.yaml                          |
 | `cluster list old-nodes-not-cordoned`     | List nodes in old nodegroups that are not yet cordoned                        |

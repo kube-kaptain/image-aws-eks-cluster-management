@@ -68,6 +68,16 @@ setup() {
   [[ "${status}" -eq 1 ]]
 }
 
+@test "cluster-list-old-nodegroups: rejects args" {
+  run bash "${SCRIPTS_DIR}/cluster-list-old-nodegroups" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
+@test "cluster-list-new-nodegroups: rejects args" {
+  run bash "${SCRIPTS_DIR}/cluster-list-new-nodegroups" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
 @test "cluster-list-nodes-for-old-nodegroups: rejects args" {
   run bash "${SCRIPTS_DIR}/cluster-list-nodes-for-old-nodegroups" bogus
   [[ "${status}" -eq 1 ]]
