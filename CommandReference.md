@@ -139,12 +139,12 @@ router without arguments to see its available sub-commands.
 
 ### drain
 
-| Command                          | Description                                                |
-|----------------------------------|------------------------------------------------------------|
-| `cluster drain node <name>`      | Drain a single node, evicting all pods                     |
-| `cluster drain nodegroup <name>` | Drain all nodes in a nodegroup                             |
-| `cluster drain old-nodegroups`   | Drain all nodes in nodegroups not defined in cluster.yaml  |
-| `cluster drain new-nodegroups`   | Drain all nodes in nodegroups defined in cluster.yaml      |
+| Command                                    | Description                                                |
+|--------------------------------------------|------------------------------------------------------------|
+| `cluster drain node <name> [--force]`      | Drain a single node, evicting all pods                     |
+| `cluster drain nodegroup <name> [--force]` | Drain all nodes in a nodegroup                             |
+| `cluster drain old-nodegroups [--force]`   | Drain all nodes in nodegroups not defined in cluster.yaml  |
+| `cluster drain new-nodegroups [--force]`   | Drain all nodes in nodegroups defined in cluster.yaml      |
 
 ### locksize
 
