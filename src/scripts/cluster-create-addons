@@ -2,7 +2,11 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2025-2026 Kaptain contributors (Fred Cooke)
 #
-# Create all EKS addons defined in cluster.yaml
+# Create all EKS addons defined in cluster.yaml in parallel
+#
+# Each addon is created as a background process to avoid waiting for
+# CloudFormation stacks sequentially. Waits for all to complete and
+# reports success or failure for each.
 #
 # Usage: cluster create addons [--force]
 set -euo pipefail
@@ -29,9 +33,41 @@ if [[ ! -f "${CLUSTER_CONFIG}" ]]; then
   exit 1
 fi
 
-cluster_name=$(yq '.metadata.name' "${CLUSTER_CONFIG}")
+addon_names=$(yq '.addons[].name' "${CLUSTER_CONFIG}")
 
-echo "Creating all addons on cluster ${cluster_name}..."
-# shellcheck disable=SC2086 # force must word-split when set, disappear when empty
-eksctl create addon -f "${CLUSTER_CONFIG}" ${force}
-echo "All addons created successfully."
+if [[ -z "${addon_names}" ]]; then
+  echo "No addons defined in ${CLUSTER_CONFIG}."
+  exit 0
+fi
+
+pids=()
+names=()
+for addon in ${addon_names}; do
+  echo "Creating addon: ${addon}"
+  # shellcheck disable=SC2086 # force must word-split when set, disappear when empty
+  eksctl create addon -f "${CLUSTER_CONFIG}" --name "${addon}" ${force} &
+  pids+=($!)
+  names+=("${addon}")
+done
+
+echo ""
+echo "Waiting for ${#pids[@]} addon(s) to finish creating..."
+
+failed=0
+for i in "${!pids[@]}"; do
+  if wait "${pids[${i}]}"; then
+    echo "  ${names[${i}]}: done"
+  else
+    echo "  ${names[${i}]}: FAILED"
+    failed=$((failed + 1))
+  fi
+done
+
+if [[ ${failed} -gt 0 ]]; then
+  echo ""
+  echo "ERROR: ${failed} addon(s) failed to create." >&2
+  exit 1
+fi
+
+echo ""
+echo "All ${#names[@]} addon(s) created successfully."

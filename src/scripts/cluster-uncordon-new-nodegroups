@@ -5,12 +5,27 @@
 # Uncordon all nodes in nodegroups that are defined in cluster.yaml
 # Useful for rollback scenarios to re-enable scheduling on new nodegroups
 #
-# Usage: cluster uncordon new-nodegroups
+# Usage: cluster uncordon new-nodegroups [--dry-run]
 set -euo pipefail
+
+dry_run=false
+case "${1:-}" in
+  --dry-run)
+    dry_run=true
+    shift
+    ;;
+  "")
+    ;;
+  *)
+    echo "ERROR: Unknown flag '${1}'" >&2
+    echo "Usage: cluster uncordon new-nodegroups [--dry-run]" >&2
+    exit 1
+    ;;
+esac
 
 if [[ $# -ne 0 ]]; then
   echo "ERROR: This command takes no arguments" >&2
-  echo "Usage: cluster uncordon new-nodegroups" >&2
+  echo "Usage: cluster uncordon new-nodegroups [--dry-run]" >&2
   exit 1
 fi
 
@@ -34,15 +49,21 @@ live_nodegroups=$(eksctl get nodegroups --cluster "${cluster_name}" -o yaml | yq
 new_count=0
 for ng in ${live_nodegroups}; do
   if echo "${configured_nodegroups}" | grep -qx "${ng}"; then
-    echo "New nodegroup found: ${ng}"
-    "${CLUSTER_SCRIPT_DIR}/cluster-uncordon-nodegroup" "${ng}"
+    if [[ "${dry_run}" == "true" ]]; then
+      echo "  Would uncordon: ${ng}"
+    else
+      echo "New nodegroup found: ${ng}"
+      "${CLUSTER_SCRIPT_DIR}/cluster-uncordon-nodegroup" "${ng}"
+      echo ""
+    fi
     new_count=$((new_count + 1))
-    echo ""
   fi
 done
 
 if [[ ${new_count} -eq 0 ]]; then
   echo "No new nodegroups found."
+elif [[ "${dry_run}" == "true" ]]; then
+  echo "Would uncordon ${new_count} new nodegroup(s)."
 else
   echo "Uncordoned ${new_count} new nodegroup(s)."
 fi

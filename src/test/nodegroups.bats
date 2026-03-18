@@ -364,3 +364,27 @@ YAML
   [[ "${output}" == *"Aborted."* ]]
   ! grep -q "cluster-delete-nodegroup" "${ACTION_LOG}"
 }
+
+# ====================================================================
+# Unmanaged nodeGroups: yq // fallback works correctly
+# ====================================================================
+
+@test "cordon-old-nodegroups: works when config uses nodeGroups instead of managedNodeGroups" {
+  cat > "${CLUSTER_CONFIG}" <<'YAML'
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: test-cluster
+  region: eu-west-1
+nodeGroups:
+  - name: ng-new-1
+  - name: ng-new-2
+YAML
+
+  run bash "${SCRIPTS_DIR}/cluster-cordon-old-nodegroups"
+  echo "STATUS: ${status}"
+  echo "OUTPUT: ${output}"
+  [[ "${status}" -eq 0 ]]
+  [[ "${output}" == *"Cordoned 1 old nodegroup(s)."* ]]
+  grep -q "cluster-cordon-nodegroup ng-old-1" "${ACTION_LOG}"
+}

@@ -4,7 +4,7 @@
 #
 # Non-disruptive nodegroup preparation: create new nodegroups, lock and cordon
 # old ones. Skips control plane and addon upgrades. Use this when the control
-# plane and addons are already at the target version (or managed separately)
+# plane and addons are already up-to-date
 # and you only need to roll the nodegroups.
 #
 # Stops before draining so you can inspect the cluster and proceed manually
@@ -60,8 +60,7 @@ echo ""
 
 echo "=== Step 2/3: Locking old nodegroup sizes ==="
 if [[ "${dry_run}" == "true" ]]; then
-  echo "No dry run available for locksize."
-  echo "Real run would find all old nodegroups and lock min and max to their current desired size."
+  "${CLUSTER_SCRIPT_DIR}/cluster-locksize-old-nodegroups" --dry-run
 else
   "${CLUSTER_SCRIPT_DIR}/cluster-locksize-old-nodegroups"
 fi
@@ -69,8 +68,7 @@ echo ""
 
 echo "=== Step 3/3: Cordoning old nodegroups ==="
 if [[ "${dry_run}" == "true" ]]; then
-  echo "No dry run available for cordon."
-  echo "Real run would cordon all nodes in old nodegroups to prevent new pods scheduling on them."
+  "${CLUSTER_SCRIPT_DIR}/cluster-cordon-old-nodegroups" --dry-run
 else
   "${CLUSTER_SCRIPT_DIR}/cluster-cordon-old-nodegroups"
 fi

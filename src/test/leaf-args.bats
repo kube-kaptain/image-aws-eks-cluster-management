@@ -68,6 +68,16 @@ setup() {
   [[ "${status}" -eq 1 ]]
 }
 
+@test "cluster-list-old-nodegroups: rejects args" {
+  run bash "${SCRIPTS_DIR}/cluster-list-old-nodegroups" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
+@test "cluster-list-new-nodegroups: rejects args" {
+  run bash "${SCRIPTS_DIR}/cluster-list-new-nodegroups" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
 @test "cluster-list-nodes-for-old-nodegroups: rejects args" {
   run bash "${SCRIPTS_DIR}/cluster-list-nodes-for-old-nodegroups" bogus
   [[ "${status}" -eq 1 ]]
@@ -278,6 +288,11 @@ setup() {
   [[ "${status}" -eq 1 ]]
 }
 
+@test "cluster-document-nodegroups-only: rejects args" {
+  run bash "${SCRIPTS_DIR}/cluster-document-nodegroups-only" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
 @test "cluster-document-deletion: rejects args" {
   run bash "${SCRIPTS_DIR}/cluster-document-deletion" bogus
   [[ "${status}" -eq 1 ]]
@@ -366,6 +381,12 @@ setup() {
 @test "cluster-delete-nodegroup: too many args exits 1" {
   run bash "${SCRIPTS_DIR}/cluster-delete-nodegroup" one two
   [[ "${status}" -eq 1 ]]
+}
+
+@test "cluster-delete-nodegroup: rejects unknown flag" {
+  run bash "${SCRIPTS_DIR}/cluster-delete-nodegroup" mygroup --bogus
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Unknown flag"* ]]
 }
 
 @test "cluster-delete-addon: no args exits 1" {

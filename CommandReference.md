@@ -43,16 +43,16 @@ router without arguments to see its available sub-commands.
 
 ### delete
 
-| Command                             | Description                                          |
-|-------------------------------------|------------------------------------------------------|
-| `cluster delete cluster`            | Delete an EKS cluster with interactive confirmation  |
-| `cluster delete nodegroup <name>`   | Delete an EKS nodegroup                              |
-| `cluster delete old-nodegroups`     | Delete all nodegroups not defined in cluster.yaml    |
-| `cluster delete new-nodegroups`     | Delete all nodegroups defined in cluster.yaml        |
-| `cluster delete addon <name>`       | Delete an EKS addon                                  |
-| `cluster delete addons`             | Delete all addons not defined in cluster.yaml        |
-| `cluster delete access-entry <arn>` | Delete a single EKS access entry                     |
-| `cluster delete access-entries`     | Delete access entries not defined in cluster.yaml    |
+| Command                                            | Description                                          |
+|----------------------------------------------------|------------------------------------------------------|
+| `cluster delete cluster`                           | Delete an EKS cluster with interactive confirmation  |
+| `cluster delete nodegroup <name> [--force]`        | Delete an EKS nodegroup                              |
+| `cluster delete old-nodegroups [--yes] [--force]`  | Delete all nodegroups not defined in cluster.yaml    |
+| `cluster delete new-nodegroups [--yes] [--force]`  | Delete all nodegroups defined in cluster.yaml        |
+| `cluster delete addon <name>`                      | Delete an EKS addon                                  |
+| `cluster delete addons [--yes]`                    | Delete all addons not defined in cluster.yaml        |
+| `cluster delete access-entry <arn>`                | Delete a single EKS access entry                     |
+| `cluster delete access-entries [--yes]`            | Delete access entries not defined in cluster.yaml    |
 
 
 ## Information
@@ -74,6 +74,8 @@ router without arguments to see its available sub-commands.
 | `cluster list all-addons-raw-json`        | Raw JSON of all available addon versions compatible with the current cluster  |
 | `cluster list nodegroup-size <name>`      | Show the min, max, and desired size of a nodegroup                            |
 | `cluster list nodes-for-nodegroup <name>` | List nodes belonging to a specific nodegroup                                  |
+| `cluster list new-nodegroups`             | List nodegroup names that are defined in cluster.yaml                         |
+| `cluster list old-nodegroups`             | List nodegroup names that are not defined in cluster.yaml                     |
 | `cluster list nodes-for-new-nodegroups`   | List nodes in nodegroups defined in cluster.yaml                              |
 | `cluster list nodes-for-old-nodegroups`   | List nodes in nodegroups not defined in cluster.yaml                          |
 | `cluster list old-nodes-not-cordoned`     | List nodes in old nodegroups that are not yet cordoned                        |
@@ -90,11 +92,12 @@ router without arguments to see its available sub-commands.
 
 ### document
 
-| Command                        | Description                        |
-|--------------------------------|------------------------------------|
-| `cluster document creation`    | Display cluster creation guide     |
-| `cluster document maintenance` | Display cluster maintenance guide  |
-| `cluster document deletion`    | Display cluster deletion guide     |
+| Command                             | Description                            |
+|-------------------------------------|----------------------------------------|
+| `cluster document creation`         | Display cluster creation guide         |
+| `cluster document maintenance`      | Display cluster maintenance guide      |
+| `cluster document nodegroups-only`  | Display nodegroup-only rollover guide  |
+| `cluster document deletion`         | Display cluster deletion guide         |
 
 
 ## Maintenance
@@ -112,42 +115,44 @@ router without arguments to see its available sub-commands.
 | `cluster upgrade cluster-access [--dry-run]`              | Reconcile cluster access config to match cluster.yaml           |
 | `cluster upgrade yaml-reconciliation [--dry-run]`         | Reconcile all cluster-level settings to match cluster.yaml      |
 | `cluster upgrade prepare-for-migration [--dry-run]`       | Non-disruptive upgrade steps, stops before draining             |
+| `cluster upgrade prepare-nodegroups-only [--dry-run]`     | Non-disruptive nodegroup-only steps, stops before draining      |
 | `cluster upgrade fast-end-to-end-automatic`               | Automated end-to-end cluster upgrade (fast path)                |
+| `cluster upgrade fast-nodegroups-only-automatic`          | Automated nodegroup rollover, skips control plane and addons    |
 
 ### cordon
 
-| Command                            | Description                                                 |
-|------------------------------------|-------------------------------------------------------------|
-| `cluster cordon node <name>`       | Cordon a single node to prevent new pods being scheduled    |
-| `cluster cordon nodegroup <name>`  | Cordon all nodes in a nodegroup                             |
-| `cluster cordon old-nodegroups`    | Cordon all nodes in nodegroups not defined in cluster.yaml  |
-| `cluster cordon new-nodegroups`    | Cordon all nodes in nodegroups defined in cluster.yaml      |
+| Command                                       | Description                                                 |
+|-----------------------------------------------|-------------------------------------------------------------|
+| `cluster cordon node <name>`                  | Cordon a single node to prevent new pods being scheduled    |
+| `cluster cordon nodegroup <name> [--dry-run]` | Cordon all nodes in a nodegroup                             |
+| `cluster cordon old-nodegroups [--dry-run]`   | Cordon all nodes in nodegroups not defined in cluster.yaml  |
+| `cluster cordon new-nodegroups [--dry-run]`   | Cordon all nodes in nodegroups defined in cluster.yaml      |
 
 ### uncordon
 
-| Command                             | Description                                                   |
-|-------------------------------------|---------------------------------------------------------------|
-| `cluster uncordon node <name>`      | Uncordon a single node to allow pods to be scheduled again    |
-| `cluster uncordon nodegroup <name>` | Uncordon all nodes in a nodegroup                             |
-| `cluster uncordon old-nodegroups`   | Uncordon all nodes in nodegroups not defined in cluster.yaml  |
-| `cluster uncordon new-nodegroups`   | Uncordon all nodes in nodegroups defined in cluster.yaml      |
+| Command                                         | Description                                                   |
+|-------------------------------------------------|---------------------------------------------------------------|
+| `cluster uncordon node <name>`                  | Uncordon a single node to allow pods to be scheduled again    |
+| `cluster uncordon nodegroup <name> [--dry-run]` | Uncordon all nodes in a nodegroup                             |
+| `cluster uncordon old-nodegroups [--dry-run]`   | Uncordon all nodes in nodegroups not defined in cluster.yaml  |
+| `cluster uncordon new-nodegroups [--dry-run]`   | Uncordon all nodes in nodegroups defined in cluster.yaml      |
 
 ### drain
 
-| Command                          | Description                                                |
-|----------------------------------|------------------------------------------------------------|
-| `cluster drain node <name>`      | Drain a single node, evicting all pods                     |
-| `cluster drain nodegroup <name>` | Drain all nodes in a nodegroup                             |
-| `cluster drain old-nodegroups`   | Drain all nodes in nodegroups not defined in cluster.yaml  |
-| `cluster drain new-nodegroups`   | Drain all nodes in nodegroups defined in cluster.yaml      |
+| Command                                    | Description                                                |
+|--------------------------------------------|------------------------------------------------------------|
+| `cluster drain node <name> [--force]`      | Drain a single node, evicting all pods                     |
+| `cluster drain nodegroup <name> [--force]` | Drain all nodes in a nodegroup                             |
+| `cluster drain old-nodegroups [--force]`   | Drain all nodes in nodegroups not defined in cluster.yaml  |
+| `cluster drain new-nodegroups [--force]`   | Drain all nodes in nodegroups defined in cluster.yaml      |
 
 ### locksize
 
-| Command                             | Description                                                    |
-|-------------------------------------|----------------------------------------------------------------|
-| `cluster locksize nodegroup <name>` | Lock a nodegroup size by setting min and max to current count  |
-| `cluster locksize old-nodegroups`   | Lock the size of all nodegroups not defined in cluster.yaml    |
-| `cluster locksize new-nodegroups`   | Lock the size of all nodegroups defined in cluster.yaml        |
+| Command                                         | Description                                                    |
+|-------------------------------------------------|----------------------------------------------------------------|
+| `cluster locksize nodegroup <name> [--dry-run]` | Lock a nodegroup size by setting min and max to current count  |
+| `cluster locksize old-nodegroups [--dry-run]`   | Lock the size of all nodegroups not defined in cluster.yaml    |
+| `cluster locksize new-nodegroups [--dry-run]`   | Lock the size of all nodegroups defined in cluster.yaml        |
 
 ### unlocksize
 
