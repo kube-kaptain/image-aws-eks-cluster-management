@@ -47,12 +47,12 @@ router without arguments to see its available sub-commands.
 |-------------------------------------|------------------------------------------------------|
 | `cluster delete cluster`            | Delete an EKS cluster with interactive confirmation  |
 | `cluster delete nodegroup <name>`   | Delete an EKS nodegroup                              |
-| `cluster delete old-nodegroups`     | Delete all nodegroups not defined in cluster.yaml    |
-| `cluster delete new-nodegroups`     | Delete all nodegroups defined in cluster.yaml        |
-| `cluster delete addon <name>`       | Delete an EKS addon                                  |
-| `cluster delete addons`             | Delete all addons not defined in cluster.yaml        |
-| `cluster delete access-entry <arn>` | Delete a single EKS access entry                     |
-| `cluster delete access-entries`     | Delete access entries not defined in cluster.yaml    |
+| `cluster delete old-nodegroups [--yes]`  | Delete all nodegroups not defined in cluster.yaml    |
+| `cluster delete new-nodegroups [--yes]`  | Delete all nodegroups defined in cluster.yaml        |
+| `cluster delete addon <name>`            | Delete an EKS addon                                  |
+| `cluster delete addons [--yes]`          | Delete all addons not defined in cluster.yaml        |
+| `cluster delete access-entry <arn>`      | Delete a single EKS access entry                     |
+| `cluster delete access-entries [--yes]`  | Delete access entries not defined in cluster.yaml    |
 
 
 ## Information
@@ -92,9 +92,10 @@ router without arguments to see its available sub-commands.
 
 | Command                        | Description                        |
 |--------------------------------|------------------------------------|
-| `cluster document creation`    | Display cluster creation guide     |
-| `cluster document maintenance` | Display cluster maintenance guide  |
-| `cluster document deletion`    | Display cluster deletion guide     |
+| `cluster document creation`         | Display cluster creation guide              |
+| `cluster document maintenance`      | Display cluster maintenance guide           |
+| `cluster document nodegroups-only`  | Display nodegroup-only rollover guide       |
+| `cluster document deletion`         | Display cluster deletion guide              |
 
 
 ## Maintenance
@@ -112,7 +113,9 @@ router without arguments to see its available sub-commands.
 | `cluster upgrade cluster-access [--dry-run]`              | Reconcile cluster access config to match cluster.yaml           |
 | `cluster upgrade yaml-reconciliation [--dry-run]`         | Reconcile all cluster-level settings to match cluster.yaml      |
 | `cluster upgrade prepare-for-migration [--dry-run]`       | Non-disruptive upgrade steps, stops before draining             |
+| `cluster upgrade prepare-nodegroups-only [--dry-run]`     | Non-disruptive nodegroup-only steps, stops before draining      |
 | `cluster upgrade fast-end-to-end-automatic`               | Automated end-to-end cluster upgrade (fast path)                |
+| `cluster upgrade fast-nodegroups-only-automatic`          | Automated nodegroup rollover, skips control plane and addons    |
 
 ### cordon
 
