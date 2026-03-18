@@ -34,11 +34,12 @@ addons:
     version: latest
 YAML
 
-  # Mock eksctl: returns the same 5 addons plus one extra
-  cat > "${BATS_TEST_TMPDIR}/bin/eksctl" <<'MOCK'
+  # Mock eksctl: handles "get addons" and "create addon"
+  export CREATED_LOG="${BATS_TEST_TMPDIR}/created.log"
+  cat > "${BATS_TEST_TMPDIR}/bin/eksctl" <<MOCK
 #!/usr/bin/env bash
-# Only handle "get addons --cluster ... -o yaml"
-cat <<'YAML'
+if [[ "\$1" == "get" ]]; then
+  cat <<'YAML'
 - Name: vpc-cni
   Status: ACTIVE
   Version: v1.19.2-eksbuild.1
@@ -58,6 +59,15 @@ cat <<'YAML'
   Status: ACTIVE
   Version: v0.1.0
 YAML
+elif [[ "\$1" == "create" ]]; then
+  for arg in "\$@"; do
+    if [[ "\${prev:-}" == "--name" ]]; then
+      echo "\${arg}" >> "${CREATED_LOG}"
+      break
+    fi
+    prev="\${arg}"
+  done
+fi
 MOCK
   chmod +x "${BATS_TEST_TMPDIR}/bin/eksctl"
 
@@ -173,4 +183,49 @@ YAML
   [[ "${output}" == *"Will delete the following 1 addon(s) not defined in cluster.yaml:"* ]]
   [[ "${output}" == *"Aborted."* ]]
   [[ ! -f "${DELETED_LOG}" ]]
+}
+
+# ====================================================================
+# cluster-create-addons: parallel creation
+# ====================================================================
+
+@test "cluster-create-addons: creates all configured addons" {
+  run bash "${SCRIPTS_DIR}/cluster-create-addons"
+  echo "STATUS: ${status}"
+  echo "OUTPUT: ${output}"
+  [[ "${status}" -eq 0 ]]
+  [[ -f "${CREATED_LOG}" ]]
+  created=$(sort "${CREATED_LOG}")
+  echo "CREATED: ${created}"
+  [[ $(echo "${created}" | wc -l | tr -d ' ') -eq 5 ]]
+  echo "${created}" | grep -qx "vpc-cni"
+  echo "${created}" | grep -qx "coredns"
+  echo "${created}" | grep -qx "kube-proxy"
+  echo "${created}" | grep -qx "aws-ebs-csi-driver"
+  echo "${created}" | grep -qx "eks-pod-identity-agent"
+}
+
+@test "cluster-create-addons: reports success message" {
+  run bash "${SCRIPTS_DIR}/cluster-create-addons"
+  echo "STATUS: ${status}"
+  echo "OUTPUT: ${output}"
+  [[ "${status}" -eq 0 ]]
+  [[ "${output}" == *"All 5 addon(s) created successfully."* ]]
+}
+
+@test "cluster-create-addons: exits 0 when no addons defined" {
+  cat > "${CLUSTER_CONFIG}" <<'YAML'
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: test-cluster
+  region: eu-west-1
+YAML
+
+  run bash "${SCRIPTS_DIR}/cluster-create-addons"
+  echo "STATUS: ${status}"
+  echo "OUTPUT: ${output}"
+  [[ "${status}" -eq 0 ]]
+  [[ "${output}" == *"No addons defined"* ]]
+  [[ ! -f "${CREATED_LOG}" ]]
 }
