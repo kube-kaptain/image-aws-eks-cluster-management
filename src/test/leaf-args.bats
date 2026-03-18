@@ -278,6 +278,11 @@ setup() {
   [[ "${status}" -eq 1 ]]
 }
 
+@test "cluster-document-nodegroups-only: rejects args" {
+  run bash "${SCRIPTS_DIR}/cluster-document-nodegroups-only" bogus
+  [[ "${status}" -eq 1 ]]
+}
+
 @test "cluster-document-deletion: rejects args" {
   run bash "${SCRIPTS_DIR}/cluster-document-deletion" bogus
   [[ "${status}" -eq 1 ]]

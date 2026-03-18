@@ -6,8 +6,7 @@
 #
 # Creates new nodegroups, drains and deletes old ones. Skips control plane
 # and addon upgrades. Use this when the control plane and addons are already
-# at the target version (or managed separately) and you only need to roll
-# the nodegroups.
+# up-to-date and you only need to roll the nodegroups.
 #
 # Only use this if your workloads are resilient (multiple replicas, PDBs,
 # all three probes, termination grace period, graceful shutdown, and more).

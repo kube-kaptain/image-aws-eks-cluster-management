@@ -4,7 +4,7 @@
 #
 # Non-disruptive nodegroup preparation: create new nodegroups, lock and cordon
 # old ones. Skips control plane and addon upgrades. Use this when the control
-# plane and addons are already at the target version (or managed separately)
+# plane and addons are already up-to-date
 # and you only need to roll the nodegroups.
 #
 # Stops before draining so you can inspect the cluster and proceed manually

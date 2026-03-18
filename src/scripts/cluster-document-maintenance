@@ -41,6 +41,11 @@ You can perform the individual steps instead of step 7 if you prefer:
   - Run `cluster locksize old-nodegroups` to prevent autoscaler scaling old nodegroups
   - Run `cluster cordon old-nodegroups` to prevent workloads starting up on them
 
+If the control plane and addons are already up-to-date and you only need to
+replace the nodegroups, see:
+
+  cluster document nodegroups-only
+
 Backing out a nodegroup migration:
 
 If the new nodegroups have problems and you need to revert, the new-nodegroups

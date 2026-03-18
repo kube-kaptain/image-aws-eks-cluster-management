@@ -43,7 +43,7 @@ often for addon upgrades or node group patching runs.
 
 ### Normal Maintenance
 
-A normal maintenance run looks like this:
+A normal 4 monthly maintenance run looks like this:
 
 1. Ensure all components in the cluster are compatible with the target version
 2. Run `cluster validate-image` to ensure it's viable
@@ -78,6 +78,32 @@ Full-auto: `cluster upgrade fast-end-to-end-automatic`
 However clusters with 100% perfectly configured workloads are rarer than hen's
 teeth. If you do this with singletons or misconfigured workloads you'll probably
 experience outages during this process; take the slower route, instead.
+
+
+### Nodegroups-Only Maintenance
+
+If you patch your nodes more frequently than the Kubernetes minor version release
+cycle, or need to change the instance type or disk size or disk type etc then this
+is the section for you.
+
+When the control plane and addons are already up-to-date and you only need to
+replace the nodegroups with new/different ones:
+
+1. Run `cluster validate-image` to ensure it's viable
+2. Run `cluster setup-credentials` to make the commands work
+3. Run `cluster list all` to get the lay of the land
+4. Run `cluster upgrade prepare-nodegroups-only` to create new nodegroups and cordon/lock old ones
+5. Delete a low-impact pod and ensure it starts up fine on the new nodegroup(s)
+6. Gently and thoughtfully migrate any singletons or other sensitive workloads
+7. Run `cluster drain old-nodegroups` to migrate any remaining workloads
+8. Confirm everything you care about is running and working fine
+9. Run `cluster delete old-nodegroups` to remove the empty unused nodes
+10. Upgrade other components within the cluster to match
+
+Or if your workloads are resilient (multiple replicas, PDBs, all three probes,
+termination grace period, graceful shutdown) you can run the automated version:
+
+Full-auto: `cluster upgrade fast-nodegroups-only-automatic`
 
 
 ### Backing Out a Nodegroup Migration
