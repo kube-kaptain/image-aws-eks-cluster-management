@@ -5,12 +5,27 @@
 # Cordon all nodes in nodegroups that are not defined in cluster.yaml
 # These are typically old nodegroups left over after an upgrade
 #
-# Usage: cluster cordon old-nodegroups
+# Usage: cluster cordon old-nodegroups [--dry-run]
 set -euo pipefail
+
+dry_run=false
+case "${1:-}" in
+  --dry-run)
+    dry_run=true
+    shift
+    ;;
+  "")
+    ;;
+  *)
+    echo "ERROR: Unknown flag '${1}'" >&2
+    echo "Usage: cluster cordon old-nodegroups [--dry-run]" >&2
+    exit 1
+    ;;
+esac
 
 if [[ $# -ne 0 ]]; then
   echo "ERROR: This command takes no arguments" >&2
-  echo "Usage: cluster cordon old-nodegroups" >&2
+  echo "Usage: cluster cordon old-nodegroups [--dry-run]" >&2
   exit 1
 fi
 
@@ -34,15 +49,21 @@ live_nodegroups=$(eksctl get nodegroups --cluster "${cluster_name}" -o yaml | yq
 old_count=0
 for ng in ${live_nodegroups}; do
   if ! echo "${configured_nodegroups}" | grep -qx "${ng}"; then
-    echo "Old nodegroup found: ${ng}"
-    "${CLUSTER_SCRIPT_DIR}/cluster-cordon-nodegroup" "${ng}"
+    if [[ "${dry_run}" == "true" ]]; then
+      echo "  Would cordon: ${ng}"
+    else
+      echo "Old nodegroup found: ${ng}"
+      "${CLUSTER_SCRIPT_DIR}/cluster-cordon-nodegroup" "${ng}"
+      echo ""
+    fi
     old_count=$((old_count + 1))
-    echo ""
   fi
 done
 
 if [[ ${old_count} -eq 0 ]]; then
   echo "No old nodegroups found."
+elif [[ "${dry_run}" == "true" ]]; then
+  echo "Would cordon ${old_count} old nodegroup(s)."
 else
   echo "Cordoned ${old_count} old nodegroup(s)."
 fi

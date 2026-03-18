@@ -92,12 +92,12 @@ router without arguments to see its available sub-commands.
 
 ### document
 
-| Command                        | Description                        |
-|--------------------------------|------------------------------------|
-| `cluster document creation`         | Display cluster creation guide              |
-| `cluster document maintenance`      | Display cluster maintenance guide           |
-| `cluster document nodegroups-only`  | Display nodegroup-only rollover guide       |
-| `cluster document deletion`         | Display cluster deletion guide              |
+| Command                             | Description                            |
+|-------------------------------------|----------------------------------------|
+| `cluster document creation`         | Display cluster creation guide         |
+| `cluster document maintenance`      | Display cluster maintenance guide      |
+| `cluster document nodegroups-only`  | Display nodegroup-only rollover guide  |
+| `cluster document deletion`         | Display cluster deletion guide         |
 
 
 ## Maintenance
@@ -121,21 +121,21 @@ router without arguments to see its available sub-commands.
 
 ### cordon
 
-| Command                            | Description                                                 |
-|------------------------------------|-------------------------------------------------------------|
-| `cluster cordon node <name>`       | Cordon a single node to prevent new pods being scheduled    |
-| `cluster cordon nodegroup <name>`  | Cordon all nodes in a nodegroup                             |
-| `cluster cordon old-nodegroups`    | Cordon all nodes in nodegroups not defined in cluster.yaml  |
-| `cluster cordon new-nodegroups`    | Cordon all nodes in nodegroups defined in cluster.yaml      |
+| Command                                       | Description                                                 |
+|-----------------------------------------------|-------------------------------------------------------------|
+| `cluster cordon node <name>`                  | Cordon a single node to prevent new pods being scheduled    |
+| `cluster cordon nodegroup <name> [--dry-run]` | Cordon all nodes in a nodegroup                             |
+| `cluster cordon old-nodegroups [--dry-run]`   | Cordon all nodes in nodegroups not defined in cluster.yaml  |
+| `cluster cordon new-nodegroups [--dry-run]`   | Cordon all nodes in nodegroups defined in cluster.yaml      |
 
 ### uncordon
 
-| Command                             | Description                                                   |
-|-------------------------------------|---------------------------------------------------------------|
-| `cluster uncordon node <name>`      | Uncordon a single node to allow pods to be scheduled again    |
-| `cluster uncordon nodegroup <name>` | Uncordon all nodes in a nodegroup                             |
-| `cluster uncordon old-nodegroups`   | Uncordon all nodes in nodegroups not defined in cluster.yaml  |
-| `cluster uncordon new-nodegroups`   | Uncordon all nodes in nodegroups defined in cluster.yaml      |
+| Command                                         | Description                                                   |
+|-------------------------------------------------|---------------------------------------------------------------|
+| `cluster uncordon node <name>`                  | Uncordon a single node to allow pods to be scheduled again    |
+| `cluster uncordon nodegroup <name> [--dry-run]` | Uncordon all nodes in a nodegroup                             |
+| `cluster uncordon old-nodegroups [--dry-run]`   | Uncordon all nodes in nodegroups not defined in cluster.yaml  |
+| `cluster uncordon new-nodegroups [--dry-run]`   | Uncordon all nodes in nodegroups defined in cluster.yaml      |
 
 ### drain
 
@@ -148,11 +148,11 @@ router without arguments to see its available sub-commands.
 
 ### locksize
 
-| Command                             | Description                                                    |
-|-------------------------------------|----------------------------------------------------------------|
-| `cluster locksize nodegroup <name>` | Lock a nodegroup size by setting min and max to current count  |
-| `cluster locksize old-nodegroups`   | Lock the size of all nodegroups not defined in cluster.yaml    |
-| `cluster locksize new-nodegroups`   | Lock the size of all nodegroups defined in cluster.yaml        |
+| Command                                         | Description                                                    |
+|-------------------------------------------------|----------------------------------------------------------------|
+| `cluster locksize nodegroup <name> [--dry-run]` | Lock a nodegroup size by setting min and max to current count  |
+| `cluster locksize old-nodegroups [--dry-run]`   | Lock the size of all nodegroups not defined in cluster.yaml    |
+| `cluster locksize new-nodegroups [--dry-run]`   | Lock the size of all nodegroups defined in cluster.yaml        |
 
 ### unlocksize
 
